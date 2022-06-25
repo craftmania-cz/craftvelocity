@@ -1,0 +1,4 @@
+[plugin]
+
+# If plugin should write debug messages in console
+debug = false

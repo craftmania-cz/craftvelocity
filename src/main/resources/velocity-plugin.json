@@ -1,0 +1,9 @@
+{
+  "id":"craftvelocity",
+  "name":"CraftVelocity",
+  "version":"1.0.0-SNAPSHOT",
+  "description":"CraftMania Velocity plugin integration.",
+  "authors":["MrWakeCZ"],
+  "dependencies":[],
+  "main":"cz.craftmania.craftvelocity.Main"
+}
