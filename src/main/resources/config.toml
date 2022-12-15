@@ -2,3 +2,30 @@
 
 # If plugin should write debug messages in console
 debug = false
+
+# SQL
+
+[sql]
+hostname = "hostname"
+database = "database"
+username = "username"
+password = "password"
+
+[sql.settings]
+minimumConnections = 2
+maximumConnections = 6
+timeout = 30000
+
+# Autologin
+
+[autologin.connectivity]
+connectTimeout = 3000
+readTimeout = 3000
+
+[autologin.messages]
+invalidNick = "&cTento nick obsahuje neplatné znaky!"
+invalidToken = "&cVypadá to, že se snažíš připojit s warez na originální nick - připoj se znovu."
+
+[autologin.servers]
+auth = "whub"
+lobbies = ["lobby"]
