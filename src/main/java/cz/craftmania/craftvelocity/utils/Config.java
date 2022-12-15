@@ -61,6 +61,9 @@ public class Config {
 
         autologin.messages.invalidNick = tomlFile.getString("autologin.messages.invalidNick", "INVALID_NICK");
         autologin.messages.invalidToken = tomlFile.getString("autologin.messages.invalidToken", "INVALID_TOKEN");
+        autologin.messages.authServerNotFound = tomlFile.getString("autologin.messages.authServerNotFound", "AUTH_SERVER_NOT_FOUND");
+        autologin.messages.databaseError = tomlFile.getString("autologin.messages.databaseError", "DATABASE_ERROR");
+        autologin.messages.runtimeError = tomlFile.getString("autologin.messages.runtimeError", "RUNTIME_ERROR");
 
         autologin.servers.auth = tomlFile.getString("autologin.servers.auth", "whub");
         autologin.servers.lobbies = tomlFile.getList("autologin.servers.lobbies", new LinkedList<>());
@@ -77,38 +80,41 @@ public class Config {
         Main.getInstance().getLogger().info("Config was loaded.");
     }
 
-    private static class Plugin {
+    public static class Plugin {
 
         private @Getter boolean debug = false;
 
     }
 
-    private static class Autologin {
+    public static class Autologin {
 
         private final @Getter Connectivity connectivity = new Connectivity();
         private final @Getter Messages messages = new Messages();
         private final @Getter Servers servers = new Servers();
 
-        private static class Connectivity {
+        public static class Connectivity {
 
             private @Getter long connectionTimeout;
             private @Getter long readTimeout;
         }
 
-        private static class Messages {
+        public static class Messages {
 
             private @Getter String invalidNick;
             private @Getter String invalidToken;
+            private @Getter String authServerNotFound;
+            private @Getter String databaseError;
+            private @Getter String runtimeError;
         }
 
-        private static class Servers {
+        public static class Servers {
 
             private @Getter String auth;
             private @Getter List<String> lobbies;
         }
     }
 
-    private static class SQL {
+    public static class SQL {
 
         private final @Getter Settings settings = new Settings();
 
@@ -117,7 +123,7 @@ public class Config {
         private @Getter String username;
         private @Getter String password;
 
-        private static class Settings {
+        public static class Settings {
 
             private @Getter long minimumConnections;
             private @Getter long maximumConnections;

@@ -7,6 +7,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
+import cz.craftmania.craftvelocity.managers.AutologinManager;
+import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.utils.Config;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -32,6 +35,10 @@ public class Main {
     private @Inject @Getter ProxyServer server;
     private @Inject @Getter @DataDirectory Path dataDirectory;
 
+    // Managers
+    private @Getter SQLManager sqlManager;
+    private @Getter AutologinManager autologinManager;
+
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) throws IOException {
         long start = System.currentTimeMillis();
@@ -43,8 +50,18 @@ public class Main {
         logger.info("Loading config(s)...");
         loadConfiguration();
 
+        logger.info("Loading SQL database...");
+        loadSQL(); // TODO: Vrátít zpět
+
+        logger.info("Loading managers...");
+        loadManagers();
+
+        logger.info("Loading listeners...");
+        loadListeners();
+
         logger.info("Finished loading! Took " + (System.currentTimeMillis() - start) + "ms");
     }
+
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
@@ -57,5 +74,21 @@ public class Main {
         config = new Config(dataDirectory);
         config.loadFile();
         config.loadConfig();
+    }
+
+    private void loadSQL() {
+        sqlManager = new SQLManager();
+        sqlManager.createAutologinPlayersTable();
+    }
+
+    private void loadManagers() {
+        autologinManager = new AutologinManager();
+        autologinManager.init();
+    }
+
+    private void loadListeners() {
+        // Autologin
+
+        server.getEventManager().register(this, new AutologinConnectionListener());
     }
 }
