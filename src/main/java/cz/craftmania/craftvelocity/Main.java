@@ -18,7 +18,7 @@ import java.nio.file.Path;
         id = "craftvelocity",
         name = "CraftVelocity",
         version = BuildConstants.VERSION,
-        url = "https://mayuna.dev",
+        url = "https://craftmania.cz",
         authors = {"Mayuna"}
 )
 public class Main {
