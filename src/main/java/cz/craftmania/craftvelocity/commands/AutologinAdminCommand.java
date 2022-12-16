@@ -21,7 +21,7 @@ public class AutologinAdminCommand extends BaseCommand {
     public void changeAutologinForPlayer(CommandSource source, Action action, String playerNick) {
         switch(action) {
             case ADD -> {
-                
+
             }
             case REMOVE -> {
 

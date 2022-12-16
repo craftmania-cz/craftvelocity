@@ -8,6 +8,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import cz.craftmania.craftvelocity.commands.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.AutologinCommand;
 import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
@@ -53,7 +54,7 @@ public class Main {
         loadConfiguration();
 
         logger.info("Loading SQL database...");
-        loadSQL(); // TODO: Vrátít zpět
+        loadSQL();
 
         logger.info("Loading managers...");
         loadManagers();
@@ -101,6 +102,7 @@ public class Main {
         VelocityCommandManager commandManager = new VelocityCommandManager(server, this);
 
         commandManager.registerCommand(new AutologinCommand());
+        commandManager.registerCommand(new AutologinAdminCommand());
 
     }
 }
