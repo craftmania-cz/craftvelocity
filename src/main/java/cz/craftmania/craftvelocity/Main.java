@@ -1,5 +1,6 @@
 package cz.craftmania.craftvelocity;
 
+import co.aikar.commands.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -7,6 +8,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import cz.craftmania.craftvelocity.commands.AutologinCommand;
 import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
@@ -59,6 +61,9 @@ public class Main {
         logger.info("Loading listeners...");
         loadListeners();
 
+        logger.info("Loading commands...");
+        loadCommands();
+
         logger.info("Finished loading! Took " + (System.currentTimeMillis() - start) + "ms");
     }
 
@@ -90,5 +95,12 @@ public class Main {
         // Autologin
 
         server.getEventManager().register(this, new AutologinConnectionListener());
+    }
+
+    private void loadCommands() {
+        VelocityCommandManager commandManager = new VelocityCommandManager(server, this);
+
+        commandManager.registerCommand(new AutologinCommand());
+
     }
 }

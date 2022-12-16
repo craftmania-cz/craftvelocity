@@ -14,11 +14,15 @@ repositories {
         name = 'papermc-repo'
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 }
 
 dependencies {
     compileOnly 'com.velocitypowered:velocity-api:3.1.0'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.0'
+
+    // Aikar commands
+    implementation "co.aikar:acf-velocity:0.5.1-SNAPSHOT"
 
     // HikariCP / MySQL
     implementation 'com.zaxxer:HikariCP:5.0.1'
@@ -30,7 +34,8 @@ dependencies {
 }
 
 shadowJar() {
-
+    relocate 'co.aikar.commands', 'cz.craftmania.craftvelocity.acf'
+    relocate 'co.aikar.locales', 'cz.craftmania.craftvelocity.locales'
 }
 
 def targetJavaVersion = 17

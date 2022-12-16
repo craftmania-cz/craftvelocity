@@ -3,8 +3,13 @@ package cz.craftmania.craftvelocity.managers;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.Logger;
+import cz.craftmania.craftvelocity.utils.Utils;
 import net.kyori.adventure.text.Component;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class AutologinManager {
 
@@ -41,5 +46,24 @@ public class AutologinManager {
             event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(errorMessage)));
             continuation.resume();
         }
+    }
+
+    public CompletableFuture<AutologinPlayer> fetchAutologinPlayer(String nick) {
+        CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            // TODO: Lookup local cache
+
+            Main.getInstance().getSqlManager().fetchAutologinPlayer(nick).whenCompleteAsync((autologinPlayer, throwable) -> {
+                if (throwable != null) {
+                    completableFuture.completeExceptionally(throwable);
+                    return;
+                }
+
+                completableFuture.complete(autologinPlayer);
+            });
+        });
+
+        return completableFuture;
     }
 }
