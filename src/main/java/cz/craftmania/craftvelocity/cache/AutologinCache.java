@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
@@ -81,7 +82,7 @@ public class AutologinCache {
 
                                                             if (autologinPlayer == null) {
                                                                 disabledAutologinPlayerCache.get(nick); // Přidá jakokdyby hráče na disabled autologin player cache
-                                                                throw new AutologinNotEnabledException("Hráč s nickem " + nick + " nemá zapnutý autologin!");
+                                                                throw new AutologinNotEnabledException(nick);
                                                             }
 
                                                             invalidateDisabledAutologinCacheForNick(nick);
@@ -136,7 +137,7 @@ public class AutologinCache {
             try {
                 completableFuture.complete(resolvedAutologinPlayerCache.get(nick));
                 // Hráč měl zapnutý autologin / byl cachnutý -> poggies
-            } catch (ExecutionException exception) {
+            } catch (UncheckedExecutionException | ExecutionException exception) {
                 if (exception.getCause() instanceof AutologinNotEnabledException) {
                     completableFuture.complete(null); // Autologin nebyl zapnutý, tak vrátíme null
                 } else {
