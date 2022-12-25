@@ -211,4 +211,58 @@ public class SQLManager {
 
         return completableFuture;
     }
+
+    public CompletableFuture<Void> removeAutologinPlayer(String nick) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        DELETE FROM autologin_players WHERE nick = ?
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, nick);
+
+                    ps.execute();
+
+                    completableFuture.complete(null);
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při mazání AutologinPlayeru v tabulce autologin_players podle nick " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Void> removeAutologinPlayer(UUID uuid) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + uuid);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        DELETE FROM autologin_players WHERE uuid = ?
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, uuid.toString());
+
+                    ps.execute();
+
+                    completableFuture.complete(null);
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při mazání AutologinPlayeru v tabulce autologin_players podle UUID " + uuid, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
 }

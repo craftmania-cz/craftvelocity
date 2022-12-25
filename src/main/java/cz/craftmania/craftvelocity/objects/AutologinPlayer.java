@@ -1,5 +1,7 @@
 package cz.craftmania.craftvelocity.objects;
 
+import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.sql.SQLManager;
 import lombok.Getter;
 
 import java.util.Date;
@@ -24,13 +26,19 @@ public class AutologinPlayer {
     }
 
     public void updateNick(String newNick) {
+        if (nick.equals(newNick)) {
+            return;
+        }
+
         nick = newNick;
-        // TODO: Update v SQL
     }
 
     public void updateLastOnline() {
         lastOnline = new Date();
-        // TODO: Update v SQL
+    }
+
+    public void updateOnSQL() {
+        Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(this);
     }
 
     @Override

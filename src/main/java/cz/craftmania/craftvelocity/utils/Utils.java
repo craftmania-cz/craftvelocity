@@ -1,7 +1,5 @@
 package cz.craftmania.craftvelocity.utils;
 
-import com.velocitypowered.api.event.EventTask;
-
 public class Utils {
 
     private static int taskId = 0;

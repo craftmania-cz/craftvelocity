@@ -3,18 +3,21 @@ package cz.craftmania.craftvelocity.managers;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
+import cz.craftmania.craftvelocity.cache.AutologinCache;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.Logger;
-import cz.craftmania.craftvelocity.utils.Utils;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class AutologinManager {
 
-    public void init() {
+    private final @Getter AutologinCache cache = new AutologinCache();
 
+    public void init() {
+        cache.init();
     }
 
     public void processPreLoginEvent(PreLoginEvent event, Continuation continuation) {
@@ -23,7 +26,8 @@ public class AutologinManager {
         try {
             Logger.info("[AUTOLOGIN] Zpracovávám hráče " + username);
 
-            Main.getInstance().getSqlManager().fetchAutologinPlayer(username).whenCompleteAsync((autologinPlayer, throwable) -> {
+
+            fetchAutologinPlayer(username).whenCompleteAsync((autologinPlayer, throwable) -> {
                 if (throwable != null) {
                     String errorMessage = Main.getInstance().getConfig().getAutologin().getMessages().getDatabaseError();
 
@@ -38,6 +42,8 @@ public class AutologinManager {
                     event.setResult(PreLoginEvent.PreLoginComponentResult.forceOnlineMode());
                 }
 
+                // Pokud je hráč null, tak nic neforcujeme. Necháme to na defaultním nastavení proxyny.
+
                 continuation.resume();
             });
         } catch (Exception exception) {
@@ -51,17 +57,81 @@ public class AutologinManager {
     public CompletableFuture<AutologinPlayer> fetchAutologinPlayer(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
-        Utils.runAsync(() -> {
-            // TODO: Lookup local cache
+        cache.fetchOrLoadAutologinPlayerForNick(nick).whenCompleteAsync(((autologinPlayer, throwable) -> {
+            if (throwable != null) {
+                completableFuture.completeExceptionally(throwable);
+                return;
+            }
 
-            Main.getInstance().getSqlManager().fetchAutologinPlayer(nick).whenCompleteAsync((autologinPlayer, throwable) -> {
-                if (throwable != null) {
-                    completableFuture.completeExceptionally(throwable);
-                    return;
-                }
+            completableFuture.complete(autologinPlayer);
+        }));
 
-                completableFuture.complete(autologinPlayer);
-            });
+        return completableFuture;
+    }
+
+    /**
+     * Tries to enable autologin for nickname.<br>
+     *
+     * The return will be null if:<br>
+     * - Player is non-premium<br>
+     * - Player in MineToolsCache has mismatched nicks with the passed nick into this method<br>
+     * <br>
+     * Throwable indicates that there was an exception when processing the MineTools API or anything else.
+     *
+     * @param nick Nick of the player
+     * @return CompletableFuture<AutologinPlayer>
+     */
+    public CompletableFuture<AutologinPlayer> enableAutologin(String nick) {
+        CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
+
+        cache.fetchOrLoadMineToolsPlayerForNick(nick)
+             .whenCompleteAsync((autologinCacheObject, throwable) -> {
+                 if (throwable != null) {
+                     completableFuture.completeExceptionally(throwable);
+                     return;
+                 }
+
+                 if (!autologinCacheObject.isOriginalNick()) { // Nick není originální
+                     completableFuture.complete(null);
+                     return;
+                 }
+
+                 MineToolsPlayer player = autologinCacheObject.getMineToolsPlayer();
+
+                 if (!player.isNickSame(nick)) { // WAKED_ != Waked_
+                     completableFuture.complete(null);
+                     return;
+                 }
+
+                 AutologinPlayer autologinPlayer = new AutologinPlayer(player.getUUID(), nick);
+
+                 Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(autologinPlayer).whenCompleteAsync((aVoid, throwableSql) -> {
+                     if (throwableSql != null) {
+                         completableFuture.completeExceptionally(throwableSql);
+                         return;
+                     }
+
+                     cache.forceAddToAutologinPlayerCache(autologinPlayer);
+                     completableFuture.complete(autologinPlayer); // Autologin byl povolený
+                 });
+             });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Void> disableAutologin(String nick) {
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Main.getInstance().getSqlManager().removeAutologinPlayer(nick).whenCompleteAsync((aVoid, throwable) -> {
+            if (throwable != null) {
+                completableFuture.completeExceptionally(throwable);
+                return;
+            }
+
+            cache.invalidateAutologinCacheForNick(nick);
+            cache.forceAddToDisabledAutologinPlayerCache(nick);
+
+            completableFuture.complete(aVoid);
         });
 
         return completableFuture;

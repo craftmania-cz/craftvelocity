@@ -56,14 +56,17 @@ public class Config {
     public void loadConfig() {
         plugin.debug = tomlFile.getBoolean("plugin.debug", false);
 
-        autologin.connectivity.connectionTimeout = tomlFile.getLong("autologin.connectivity.connectionTimeout", 3000L);
-        autologin.connectivity.readTimeout = tomlFile.getLong("autologin.connectivity.readTimeout", 3000L);
+        autologin.cache.invalidateMineToolsCacheAfter = tomlFile.getLong("autologin.cache.invalidateMineToolsCacheAfter", 1800000L);
+        autologin.cache.invalidateAutologinCacheAfter = tomlFile.getLong("autologin.cache.invalidateAutologinCacheAfter", 3600000L);
+        autologin.cache.invalidateDisabledAutologinCacheAfter = tomlFile.getLong("autologin.cache.invalidateDisabledAutologinCacheAfter", 3600000L);
 
         autologin.messages.invalidNick = tomlFile.getString("autologin.messages.invalidNick", "INVALID_NICK");
         autologin.messages.invalidToken = tomlFile.getString("autologin.messages.invalidToken", "INVALID_TOKEN");
         autologin.messages.authServerNotFound = tomlFile.getString("autologin.messages.authServerNotFound", "AUTH_SERVER_NOT_FOUND");
         autologin.messages.databaseError = tomlFile.getString("autologin.messages.databaseError", "DATABASE_ERROR");
         autologin.messages.runtimeError = tomlFile.getString("autologin.messages.runtimeError", "RUNTIME_ERROR");
+        autologin.messages.autologinEnabled = tomlFile.getString("autologin.messages.autologinEnabled", "AUTOLOGIN_ENABLED");
+        autologin.messages.autologinDisabled = tomlFile.getString("autologin.messages.autologinDisabled", "AUTOLOGIN_DISABLED");
 
         autologin.servers.auth = tomlFile.getString("autologin.servers.auth", "whub");
         autologin.servers.lobbies = tomlFile.getList("autologin.servers.lobbies", new LinkedList<>());
@@ -88,14 +91,15 @@ public class Config {
 
     public static class Autologin {
 
-        private final @Getter Connectivity connectivity = new Connectivity();
+        private final @Getter Cache cache = new Cache();
         private final @Getter Messages messages = new Messages();
         private final @Getter Servers servers = new Servers();
 
-        public static class Connectivity {
+        public static class Cache {
 
-            private @Getter long connectionTimeout;
-            private @Getter long readTimeout;
+            private @Getter long invalidateMineToolsCacheAfter;
+            private @Getter long invalidateAutologinCacheAfter;
+            private @Getter long invalidateDisabledAutologinCacheAfter;
         }
 
         public static class Messages {
@@ -105,6 +109,8 @@ public class Config {
             private @Getter String authServerNotFound;
             private @Getter String databaseError;
             private @Getter String runtimeError;
+            private @Getter String autologinEnabled;
+            private @Getter String autologinDisabled;
         }
 
         public static class Servers {

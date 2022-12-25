@@ -5,6 +5,10 @@ import net.kyori.adventure.text.Component;
 
 public class ChatInfo {
 
+    public static void success(CommandSource source, String message) {
+        process(source, "§a", "> " + message);
+    }
+
     public static void info(CommandSource source, String message) {
         process(source, "§7", "> " + message);
     }

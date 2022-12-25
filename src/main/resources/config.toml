@@ -18,9 +18,10 @@ timeout = 30000
 
 # Autologin
 
-[autologin.connectivity]
-connectTimeout = 3000
-readTimeout = 3000
+[autologin.cache]
+invalidateMineToolsCacheAfter = 1800000
+invalidateAutologinCacheAfter = 3600000
+invalidateDisabledAutologinCacheAfter = 3600000
 
 [autologin.messages]
 invalidNick = "&cTento nick obsahuje neplatné znaky!"
@@ -28,6 +29,8 @@ invalidToken = "&cVypadá to, že se snažíš připojit s warez na originální
 authServerNotFound = "&cNebyl nalezený žádný autentikační server.\n§cProsím, ihned nás kontaktuj.\n\n§9Discord: §ehttps://discord.gg/craftmania"
 databaseError = "§e[AUTOLOGIN] &cNastala chyba při načítání dat z databáze.\n§cProsím, zkus se připojit znovu. Pokud by to stále nešlo, prosím, kontaktuj nás.\n\n§9Discord: §ehttps://discord.gg/craftmania"
 runtimeError = "§e[AUTOLOGIN] &cNastala neočekávaná chyba.\n§cProsím, zkus se připojit znovu. Pokud by to stále nešlo, prosím, kontaktuj nás.\n\n§9Discord: §ehttps://discord.gg/craftmania"
+autologinEnabled = "§e[AUTOLOGIN] &aÚspěšně sis zapnul autologin! §eProsím, připoj se znovu."
+autologinDisabled = "§e[AUTOLOGIN] &aÚspěšně sis vypnul autologin! §eProsím, připoj se znovu."
 
 [autologin.servers]
 auth = "whub"

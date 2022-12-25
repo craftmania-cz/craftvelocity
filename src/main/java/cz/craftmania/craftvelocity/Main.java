@@ -1,5 +1,6 @@
 package cz.craftmania.craftvelocity;
 
+import co.aikar.commands.ACFVelocityListener;
 import co.aikar.commands.VelocityCommandManager;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;

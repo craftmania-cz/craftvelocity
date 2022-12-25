@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import com.velocitypowered.api.command.CommandSource;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.cache.AutologinCache;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 
 @Subcommand("/autologin")
@@ -14,17 +15,45 @@ public class AutologinAdminCommand extends BaseCommand {
 
     @Default
     public void showAutologinStatistics(CommandSource source) {
-        // TODO: Write out cache info
+        AutologinCache cache = Main.getInstance().getAutologinManager().getCache();
+
+        ChatInfo.info(source, "== Autologin Cache Stats ==");
+        ChatInfo.info(source, "> MineToolsCache size: " + cache.getResolvedMineToolsPlayersCache().size());
+        ChatInfo.info(source, "> AutologinPlayerCache size: " + cache.getResolvedAutologinPlayerCache().size());
+        ChatInfo.info(source, "> DisabledAutologinPlayerCache size: " + cache.getDisabledAutologinPlayerCache().size());
     }
 
     @Default
     public void changeAutologinForPlayer(CommandSource source, Action action, String playerNick) {
         switch(action) {
-            case ADD -> {
+            case ENABLE -> {
+                ChatInfo.info(source, "Zapínám autologin pro hráče §e" + playerNick + "{c}...");
 
+                Main.getInstance().getAutologinManager().enableAutologin(playerNick).whenCompleteAsync((autologinPlayer, throwable) -> {
+                    if (throwable != null) {
+                        ChatInfo.error(source, "Nastala chyba při zapínání autologinu pro hráče §e" + playerNick + "{c}.");
+                        return;
+                    }
+
+                    if (autologinPlayer == null) {
+                        ChatInfo.error(source, "Nick §e" + playerNick + "{c} není originální. Nelze pro tento nick zapnout autologin!");
+                        return;
+                    }
+
+                    ChatInfo.success(source, "Úspěšně jste zapnuli autologin pro nick §e" + playerNick + "{c}!");
+                });
             }
-            case REMOVE -> {
+            case DISABLE -> {
+                ChatInfo.info(source, "Vypínám autologin pro hráče §e" + playerNick + "{c}...");
 
+                Main.getInstance().getAutologinManager().disableAutologin(playerNick).whenCompleteAsync((aVoid, throwable) -> {
+                    if (throwable != null) {
+                        ChatInfo.error(source, "Nastala chyba při vypínání autologinu pro hráče §e" + playerNick + "{c}.");
+                        return;
+                    }
+
+                    ChatInfo.success(source, "Úspěšně jste vypnuli autologin pro nick §e" + playerNick + "{c}!");
+                });
             }
             case CHECK -> {
                 ChatInfo.info(source, "Načítám autologin data o hráči §e" + playerNick + "{c}...");
@@ -41,14 +70,13 @@ public class AutologinAdminCommand extends BaseCommand {
                         ChatInfo.info(source, "Hráč §e" + playerNick + "{c} §azapnutý{c} autologin.");
                     }
                 });
-
             }
         }
     }
 
     public enum Action {
-        ADD,
-        REMOVE,
+        ENABLE,
+        DISABLE,
         CHECK
     }
 }
