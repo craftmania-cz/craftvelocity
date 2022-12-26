@@ -15,4 +15,11 @@ public class MineToolsCacheObject {
     public boolean isOriginalNick() {
         return mineToolsPlayer.isOriginalNick();
     }
+
+    @Override
+    public String toString() {
+        return "MineToolsCacheObject{" +
+                "mineToolsPlayer=" + mineToolsPlayer +
+                '}';
+    }
 }

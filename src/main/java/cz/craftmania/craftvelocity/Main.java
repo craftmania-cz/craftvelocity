@@ -1,8 +1,7 @@
 package cz.craftmania.craftvelocity;
 
-import co.aikar.commands.ACFVelocityListener;
-import co.aikar.commands.VelocityCommandManager;
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -100,10 +99,9 @@ public class Main {
     }
 
     private void loadCommands() {
-        VelocityCommandManager commandManager = new VelocityCommandManager(server, this);
+        CommandManager commandManager = server.getCommandManager();
 
-        commandManager.registerCommand(new AutologinCommand());
-        commandManager.registerCommand(new AutologinAdminCommand());
-
+        new AutologinAdminCommand().registerCommand(commandManager);
+        new AutologinCommand().registerCommand(commandManager);
     }
 }

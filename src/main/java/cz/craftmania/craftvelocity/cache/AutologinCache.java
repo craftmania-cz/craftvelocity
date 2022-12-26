@@ -111,7 +111,7 @@ public class AutologinCache {
                                                    });
     }
 
-    public CompletableFuture<MineToolsCacheObject> fetchOrLoadMineToolsPlayerForNick(String nick) {
+    public CompletableFuture<MineToolsCacheObject> fetchOrLoadMineToolsPlayerFromNick(String nick) {
         CompletableFuture<MineToolsCacheObject> completableFuture = new CompletableFuture<>();
 
         Utils.runAsync(() -> {
@@ -125,15 +125,16 @@ public class AutologinCache {
         return completableFuture;
     }
 
-    public CompletableFuture<AutologinPlayer> fetchOrLoadAutologinPlayerForNick(String nick) {
+    public CompletableFuture<AutologinPlayer> fetchOrLoadAutologinPlayerFromNick(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
-        // Pokud je v tomto cache, tak víme, že hráč nemá autologin - není třeba dotazovat SQL tabulku
-        if (disabledAutologinPlayerCache.getIfPresent(nick) != null) {
-            completableFuture.complete(null);
-        }
-
         Utils.runAsync(() -> {
+            // Pokud je v tomto cache, tak víme, že hráč nemá autologin - není třeba dotazovat SQL tabulku
+            if (disabledAutologinPlayerCache.getIfPresent(nick) != null) {
+                completableFuture.complete(null);
+                return;
+            }
+
             try {
                 completableFuture.complete(resolvedAutologinPlayerCache.get(nick));
                 // Hráč měl zapnutý autologin / byl cachnutý -> poggies

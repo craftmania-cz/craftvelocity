@@ -1,7 +1,6 @@
 package cz.craftmania.craftvelocity.objects;
 
 import cz.craftmania.craftvelocity.Main;
-import cz.craftmania.craftvelocity.sql.SQLManager;
 import lombok.Getter;
 
 import java.util.Date;

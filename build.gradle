@@ -24,9 +24,6 @@ dependencies {
     // Mayuna's libraries
     implementation 'dev.mayuna:simple-java-api-wrapper:1.0.1.1'
 
-    // Aikar commands
-    implementation "co.aikar:acf-velocity:0.5.1-SNAPSHOT"
-
     // HikariCP / MySQL
     implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation 'mysql:mysql-connector-java:8.0.30'

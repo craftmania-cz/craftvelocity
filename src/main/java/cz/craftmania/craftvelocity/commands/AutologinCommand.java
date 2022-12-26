@@ -1,8 +1,5 @@
 package cz.craftmania.craftvelocity.commands;
 
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.Main;
@@ -10,80 +7,109 @@ import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
 import net.kyori.adventure.text.Component;
 
-@Subcommand("autologin")
-public class AutologinCommand extends BaseCommand {
+import java.util.LinkedList;
+import java.util.List;
 
-    @Default
-    public void showAutologinStatus(CommandSource commandSource) {
-        if (!(commandSource instanceof Player player)) {
-            Logger.error("Tento příkaz je pro hráče. V konzoli použij /autologin");
-            return;
-        }
+public class AutologinCommand implements CraftCommand {
 
-        ChatInfo.info(commandSource, "Načítám tvé autologin data...");
-
-        Main.getInstance().getAutologinManager().fetchAutologinPlayer(player.getUsername()).whenCompleteAsync((autologinPlayer, throwable) -> {
-            if (throwable != null) {
-                ChatInfo.error(commandSource, "Nastala chyba při získávání tvých autologin dat. Zkus to, prosím, později.");
-                return;
-            }
-
-            if (autologinPlayer == null) {
-                ChatInfo.info(commandSource, "Aktuálně máš §evypnutý{c} autologin.");
-            } else {
-                ChatInfo.info(commandSource, "Aktuálně máš §azapnutý{c} autologin.");
-            }
-        });
+    @Override
+    public String getCommandAlias() {
+        return "autologin";
     }
 
-    @Subcommand("on")
-    public void turnOnAutologin(CommandSource commandSource) {
-        if (!(commandSource instanceof Player player)) {
-            Logger.error("Tento příkaz je pro hráče. V konzoli použij /autologin");
-            return;
+    @Override
+    public List<String> getSuggestion(Invocation invocation, String[] arguments, int argumentsCount) {
+        List<String> suggestions = new LinkedList<>();
+
+        switch (argumentsCount) {
+            case 0, 1 -> {
+                suggestions.add("on");
+                suggestions.add("off");
+                suggestions.add("ignore");
+            }
         }
 
-        ChatInfo.info(commandSource, "Zapínám ti autologin...");
-
-        Main.getInstance().getAutologinManager().enableAutologin(player.getUsername()).whenCompleteAsync(((autologinPlayer, throwable) -> {
-            if (throwable != null) {
-                ChatInfo.error(commandSource, "Nastala chyba při zapínání autologinu. Zkus to, prosím, později. Pokud tato chyba bude přetrvávat, prosím, kontaktuj nás. §8(§9/discord§8)");
-                return;
-            }
-
-            if (autologinPlayer == null) {
-                ChatInfo.error(commandSource, "Tvůj nick §e" + player.getUsername() + "{c} není originální! Nelze zapnout autologin pro warez hráče.");
-                return;
-            }
-
-            player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAutologinEnabled()));
-        }));
+        return suggestions;
     }
 
-    @Subcommand("off")
-    public void turnOffAutologin(CommandSource commandSource) {
+    @Override
+    public void execute(Invocation invocation) {
+        CommandSource commandSource = invocation.source();
+        String[] arguments = invocation.arguments();
+
         if (!(commandSource instanceof Player player)) {
             Logger.error("Tento příkaz je pro hráče. V konzoli použij /autologin");
             return;
         }
 
-        ChatInfo.info(commandSource, "Vypínám ti autologin...");
+        if (arguments.length == 0) {
+            ChatInfo.info(commandSource, "Načítám tvé autologin data...");
 
-        Main.getInstance().getAutologinManager().disableAutologin(player.getUsername()).whenCompleteAsync(((aVoid, throwable) -> {
-            if (throwable != null) {
-                ChatInfo.error(commandSource, "Nastala chyba při zapínání autologinu. Zkus to, prosím, později. Pokud tato chyba bude přetrvávat, prosím, kontaktuj nás. §8(§9/discord§8)");
-                return;
+            Main.getInstance().getAutologinManager().fetchAutologinPlayer(player.getUsername()).whenCompleteAsync((autologinPlayer, throwable) -> {
+                if (throwable != null) {
+                    ChatInfo.error(commandSource, "Nastala chyba při získávání tvých autologin dat. Zkus to, prosím, později.");
+                    return;
+                }
+
+                if (autologinPlayer == null) {
+                    ChatInfo.info(commandSource, "Aktuálně máš §evypnutý{c} autologin.");
+                } else {
+                    ChatInfo.info(commandSource, "Aktuálně máš §azapnutý{c} autologin.");
+                }
+            });
+
+            return;
+        }
+
+        if (arguments.length == 1) {
+            String action = arguments[0];
+
+            switch (action) {
+                case "on" -> {
+                    ChatInfo.info(commandSource, "Zapínám ti autologin...");
+
+                    Main.getInstance()
+                        .getAutologinManager()
+                        .enableAutologin(player.getUsername())
+                        .whenCompleteAsync(((autologinPlayer, throwable) -> {
+                            if (throwable != null) {
+                                ChatInfo.error(commandSource, "Nastala chyba při zapínání autologinu. Zkus to, prosím, později. Pokud tato chyba bude přetrvávat, prosím, kontaktuj nás. §8(§9/discord§8)");
+                                return;
+                            }
+
+                            if (autologinPlayer == null) {
+                                ChatInfo.error(commandSource, "Tvůj nick §e" + player.getUsername() + "{c} není originální! Nelze zapnout autologin pro warez hráče.");
+                                return;
+                            }
+
+                            player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAutologinEnabled()));
+                        }));
+
+                    return;
+                }
+
+                case "off" -> {
+                    ChatInfo.info(commandSource, "Vypínám ti autologin...");
+
+                    Main.getInstance().getAutologinManager().disableAutologin(player.getUsername()).whenCompleteAsync(((aVoid, throwable) -> {
+                        if (throwable != null) {
+                            ChatInfo.error(commandSource, "Nastala chyba při vypínání autologinu. Zkus to, prosím, později. Pokud tato chyba bude přetrvávat, prosím, kontaktuj nás. §8(§9/discord§8)");
+                            return;
+                        }
+
+                        player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAutologinDisabled()));
+                    }));
+
+                    return;
+                }
+
+                case "ignore" -> {
+
+                }
             }
 
-            player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAutologinEnabled()));
-        }));
-    }
-
-    @Subcommand("ignore")
-    public void ignoreAutologinMessage(CommandSource commandSource) {
-        if (!(commandSource instanceof Player player)) {
-            Logger.error("Tento příkaz je pro hráče. V konzoli použij /autologin");
-            return;
         }
+
+        ChatInfo.error(commandSource, "Invalidní syntax příkazu. Syntax: /autologin [on|off|ignore]");
     }
 }

@@ -1,5 +1,7 @@
 package cz.craftmania.craftvelocity.utils;
 
+import java.util.List;
+
 public class Utils {
 
     private static int taskId = 0;
@@ -19,5 +21,9 @@ public class Utils {
 
             Logger.debug("[ASYNC] Task " + currentTaskId + " finished in " + (System.currentTimeMillis() - start) + "ms");
         }).start();
+    }
+
+    public static void runUnmaintainedAsync(Runnable runnable) {
+        new Thread(runnable).start();
     }
 }

@@ -57,7 +57,7 @@ public class AutologinManager {
     public CompletableFuture<AutologinPlayer> fetchAutologinPlayer(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
-        cache.fetchOrLoadAutologinPlayerForNick(nick).whenCompleteAsync(((autologinPlayer, throwable) -> {
+        cache.fetchOrLoadAutologinPlayerFromNick(nick).whenCompleteAsync(((autologinPlayer, throwable) -> {
             if (throwable != null) {
                 completableFuture.completeExceptionally(throwable);
                 return;
@@ -84,7 +84,7 @@ public class AutologinManager {
     public CompletableFuture<AutologinPlayer> enableAutologin(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
-        cache.fetchOrLoadMineToolsPlayerForNick(nick)
+        cache.fetchOrLoadMineToolsPlayerFromNick(nick)
              .whenCompleteAsync((autologinCacheObject, throwable) -> {
                  if (throwable != null) {
                      completableFuture.completeExceptionally(throwable);
@@ -112,6 +112,7 @@ public class AutologinManager {
                      }
 
                      cache.forceAddToAutologinPlayerCache(autologinPlayer);
+                     cache.invalidateDisabledAutologinCacheForNick(autologinPlayer.getNick());
                      completableFuture.complete(autologinPlayer); // Autologin byl povolený
                  });
              });

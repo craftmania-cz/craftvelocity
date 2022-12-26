@@ -10,10 +10,9 @@ public class MineToolsPlayer extends MineToolsResponse {
 
     private @Getter String id;
     private @Getter String name;
-    private @Getter String status;
 
     public boolean isOriginalNick() {
-        return id != null && name != null && status.equals("OK");
+        return id != null && name != null && getStatus().equals("OK");
     }
 
     public UUID getUUID() {
@@ -22,5 +21,13 @@ public class MineToolsPlayer extends MineToolsResponse {
 
     public boolean isNickSame(String nick) {
         return name.equals(nick);
+    }
+
+    @Override
+    public String toString() {
+        return "MineToolsPlayer{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
