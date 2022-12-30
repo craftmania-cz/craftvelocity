@@ -29,6 +29,7 @@ public class AutologinAdminCommand implements CraftCommand {
                 suggestions.add("enable");
                 suggestions.add("disable");
                 suggestions.add("check");
+                suggestions.add("clear-cache");
 
                 if (argumentsCount == 1) {
                     if (!suggestions.contains(arguments[0])) {
@@ -66,9 +67,10 @@ public class AutologinAdminCommand implements CraftCommand {
         if (arguments.length == 1) {
             String action = arguments[0].toLowerCase();
 
+            AutologinCache cache = Main.getInstance().getAutologinManager().getCache();
+
             switch (action) {
                 case "verbose" -> {
-                    AutologinCache cache = Main.getInstance().getAutologinManager().getCache();
                     ChatInfo.info(source, "== Autologin Cache Verbose Stats ==");
 
                     var mineToolsCache = cache.getResolvedMineToolsPlayersCache();
@@ -91,6 +93,14 @@ public class AutologinAdminCommand implements CraftCommand {
 
                     return;
                 }
+                case "clear-cache" -> {
+                    ChatInfo.info(source, "Mažu Autologin Cache...");
+
+                    cache.clear();
+
+                    ChatInfo.success(source, "Vymazal jsi Autologin Cache.");
+                    return;
+                }
             }
         }
 
@@ -98,7 +108,7 @@ public class AutologinAdminCommand implements CraftCommand {
             String action = arguments[0].toUpperCase();
             String playerNick = arguments[1];
 
-            switch(action) {
+            switch (action) {
                 case "ENABLE" -> {
                     ChatInfo.info(source, "Zapínám autologin pro hráče §e" + playerNick + "{c}...");
 
@@ -153,6 +163,6 @@ public class AutologinAdminCommand implements CraftCommand {
             }
         }
 
-        ChatInfo.error(source, "Invalidní syntax příkazu. Syntax: //autologin [enable|disable|check <nick>]");
+        ChatInfo.error(source, "Invalidní syntax příkazu. Syntax: //autologin [[enable|disable|check <nick>]|clear-cache]");
     }
 }

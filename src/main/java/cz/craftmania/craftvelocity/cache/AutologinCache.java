@@ -169,4 +169,14 @@ public class AutologinCache {
     public void forceAddToDisabledAutologinPlayerCache(String nick) {
         disabledAutologinPlayerCache.put(nick, true);
     }
+
+    public AutologinPlayer getIfPresentFromAutologinPlayerCache(String nick) {
+        return resolvedAutologinPlayerCache.getIfPresent(nick);
+    }
+
+    public void clear() {
+        resolvedMineToolsPlayersCache.invalidateAll();
+        resolvedAutologinPlayerCache.invalidateAll();
+        disabledAutologinPlayerCache.invalidateAll();
+    }
 }
