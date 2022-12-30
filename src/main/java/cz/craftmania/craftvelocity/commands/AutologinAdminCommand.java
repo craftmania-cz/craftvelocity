@@ -18,7 +18,7 @@ public class AutologinAdminCommand implements CraftCommand {
 
     @Override
     public String[] getPermissionNodes() {
-        return new String[]{"craftvelocity.admin.autologin"};
+        return new String[]{"craftvelocity.autologin.admin"};
     }
 
     @Override
