@@ -8,6 +8,7 @@ import cz.craftmania.craftvelocity.utils.Utils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 public class AutologinAdminCommand implements CraftCommand {
 
@@ -168,6 +169,38 @@ public class AutologinAdminCommand implements CraftCommand {
             }
         }
 
-        ChatInfo.error(source, "Invalidní syntax příkazu. Syntax: //autologin [[enable|disable|check <nick>]|clear-cache]");
+        if (arguments.length == 3) {
+            String action = arguments[0].toUpperCase();
+            String playerNick = arguments[1];
+            UUID playerUUID;
+
+            try {
+                playerUUID = UUID.fromString(arguments[2]);
+            } catch (Exception exception) {
+                ChatInfo.error(source, "Natala chyba při parsování UUID " + arguments[2]);
+                return;
+            }
+
+            switch (action) {
+                case "FORCE-ENABLE" -> {
+                    ChatInfo.info(source, "Manuálně zapínám autologin pro hráče §e" + playerNick + "{c} s UUID §e" + playerUUID + "{c}...");
+
+                    Main.getInstance().getAutologinManager().enableAutologin(playerNick, playerUUID).whenCompleteAsync(((autologinPlayer, throwable) -> {
+                        if (throwable != null) {
+                            ChatInfo.error(source, "Nastala chyba při zapínání autologinu pro hráče §e" + playerNick + "{c} s UUID §e" + playerUUID + "!");
+                            return;
+                        }
+
+                        Utils.kickPlayer(playerNick, Main.getInstance().getConfig().getAutologin().getMessages().getAutologinDisabledForced());
+
+                        ChatInfo.success(source, "Úspěšně jste zapnuli autologin pro nick §e" + playerNick + " s UUID §e" + playerUUID + "{c}! Pokud hráč byl online, byl vykopnut.");
+                    }));
+
+                    return;
+                }
+            }
+        }
+
+        ChatInfo.error(source, "Invalidní syntax příkazu. Syntax: //autologin [[enable|disable|check <nick>]|[force-enable <nick> <uuid>]|clear-cache]");
     }
 }

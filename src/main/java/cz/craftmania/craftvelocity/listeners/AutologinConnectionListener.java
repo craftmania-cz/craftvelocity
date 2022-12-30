@@ -12,15 +12,10 @@ import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
-import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventSource;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.function.UnaryOperator;
 
 public class AutologinConnectionListener {
 
@@ -84,12 +79,12 @@ public class AutologinConnectionListener {
                     ChatInfo.error(player, "Pozor! Pokud nevlastníš originální Minecraft a zapneš si autologin, nebudeš se moct na tvůj nick připojit.");
                     player.sendMessage(Component.text());
 
-                    TextComponent autologinEnableComponent = Component.text(ChatInfo.info("Pokud vlastníš originální Minecraft a chceš si §azapnout{c} autologin, "))
+                    TextComponent autologinEnableComponent = Component.text(ChatInfo.infoMessage("Pokud vlastníš originální Minecraft a chceš si §azapnout{c} autologin, "))
                                                                       .append(Component.text("§eklikni zde")
                                                                                        .hoverEvent(HoverEvent.showText(Component.text("§cPokud nevlastníš originální Minecraft, §4§lneklikej!")))
                                                                                        .clickEvent(ClickEvent.suggestCommand("/autologin on")));
 
-                    TextComponent autologinIgnoreComponent = Component.text(ChatInfo.info("Pokud tuto zprávu již §cnechceš{c} vidět, "))
+                    TextComponent autologinIgnoreComponent = Component.text(ChatInfo.infoMessage("Pokud tuto zprávu již §cnechceš{c} vidět, "))
                                                                       .append(Component.text("§eklikni zde")
                                                                                        .hoverEvent(HoverEvent.showText(Component.text("§7Pokud by sis to rozmyslel, pro zapnutí autologinu použij §e/autologin on")))
                                                                                        .clickEvent(ClickEvent.suggestCommand("/autologin ignore")));

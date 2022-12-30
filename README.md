@@ -8,6 +8,7 @@ Právo: `craftvelocity.autologin.admin`<br>
 `//autologin verbose` - Vypíše informace o Autologin Cache s jednotlivými záznamy<br>
 `//autologin clear-cache` - Vymaže Autologin Cache<br>
 `//autologin enable <nick>` - Zapne autologin pro nick; pokud hráč je online, kickne ho to<br>
+`//autologin force-enable <nick> <uuid>` - Zapne autologin pro nick s UUID; pokud hráč je online, kickne ho to (ignoruje MineTools checky)<br>
 `//autologin disable <nick>` - Vypne autologin pro nick; pokud hráč je online, kickne ho to<br>
 `//autologin check <nick>` - Řekne zda nick má zapnutý či vypnutý autologin<br>
 

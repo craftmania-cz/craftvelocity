@@ -11,6 +11,7 @@ import cz.craftmania.craftvelocity.utils.Logger;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class AutologinManager {
@@ -117,6 +118,28 @@ public class AutologinManager {
                      completableFuture.complete(autologinPlayer); // Autologin byl povolený
                  });
              });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<AutologinPlayer> enableAutologin(String nick, UUID uuid) {
+        CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
+
+        AutologinPlayer autologinPlayer = new AutologinPlayer(uuid, nick);
+
+        Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(autologinPlayer).whenCompleteAsync(((unused, throwableSql) -> {
+            if (throwableSql != null) {
+                completableFuture.completeExceptionally(throwableSql);
+                return;
+            }
+
+            cache.invalidateAutologinCacheForNick(nick);
+            cache.invalidateMineToolsCacheForNick(nick);
+            cache.invalidateDisabledAutologinCacheForNick(nick);
+            cache.forceAddToAutologinPlayerCache(autologinPlayer);
+
+            completableFuture.complete(autologinPlayer);
+        }));
 
         return completableFuture;
     }
