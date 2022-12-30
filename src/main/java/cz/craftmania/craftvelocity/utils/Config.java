@@ -61,8 +61,6 @@ public class Config {
         autologin.cache.invalidateAutologinCacheAfter = tomlFile.getLong("autologin.cache.invalidateAutologinCacheAfter", 3600000L);
         autologin.cache.invalidateDisabledAutologinCacheAfter = tomlFile.getLong("autologin.cache.invalidateDisabledAutologinCacheAfter", 3600000L);
 
-        autologin.messages.invalidNick = tomlFile.getString("autologin.messages.invalidNick", "INVALID_NICK");
-        autologin.messages.invalidToken = tomlFile.getString("autologin.messages.invalidToken", "INVALID_TOKEN");
         autologin.messages.authServerNotFound = tomlFile.getString("autologin.messages.authServerNotFound", "AUTH_SERVER_NOT_FOUND");
         autologin.messages.databaseError = tomlFile.getString("autologin.messages.databaseError", "DATABASE_ERROR");
         autologin.messages.runtimeError = tomlFile.getString("autologin.messages.runtimeError", "RUNTIME_ERROR");
@@ -109,8 +107,6 @@ public class Config {
 
         public static class Messages {
 
-            private @Getter String invalidNick;
-            private @Getter String invalidToken;
             private @Getter String authServerNotFound;
             private @Getter String databaseError;
             private @Getter String runtimeError;
