@@ -18,8 +18,8 @@ public class Logger {
         Main.getInstance().getLogger().error(message);
     }
 
-    public static void error(String message, Exception exception) {
-        Main.getInstance().getLogger().error(message, exception);
+    public static void error(String message, Throwable throwable) {
+        Main.getInstance().getLogger().error(message, throwable);
     }
 
     public static void debug(String message) {

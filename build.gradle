@@ -23,6 +23,7 @@ dependencies {
 
     // Mayuna's libraries
     implementation 'dev.mayuna:simple-java-api-wrapper:1.0.1.1'
+    implementation 'dev.mayuna:pumpk1n:2.1.1-hotfix2'
 
     // HikariCP / MySQL
     implementation 'com.zaxxer:HikariCP:5.0.1'

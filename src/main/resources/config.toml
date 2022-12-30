@@ -31,7 +31,14 @@ databaseError = "§e[AUTOLOGIN] §cNastala chyba při načítání dat z databá
 runtimeError = "§e[AUTOLOGIN] §cNastala neočekávaná chyba.\n§cProsím, zkus se připojit znovu. Pokud by to stále nešlo, prosím, kontaktuj nás.\n\n§9Discord: §ehttps://discord.gg/craftmania"
 autologinEnabled = "§e[AUTOLOGIN] §aÚspěšně sis zapnul autologin! §eProsím, připoj se znovu."
 autologinDisabled = "§e[AUTOLOGIN] §aÚspěšně sis vypnul autologin! §eProsím, připoj se znovu."
+autologinEnabledForced = "§e[AUTOLOGIN] §7Byl ti §azapnut§7 autologin. §eProsím, připoj se znovu."
+autologinDisabledForced = "§e[AUTOLOGIN] §7Byl ti §cvypnut§7 autologin. §eProsím, připoj se znovu."
 
 [autologin.servers]
 auth = "whub"
 lobbies = ["lobby"]
+
+# Misc
+
+[pumpk1n]
+dataFolder = "./pumpk1n/"

@@ -3,6 +3,7 @@ package cz.craftmania.craftvelocity.managers;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
 import cz.craftmania.craftvelocity.cache.AutologinCache;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;

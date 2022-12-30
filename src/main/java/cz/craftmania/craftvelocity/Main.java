@@ -14,6 +14,8 @@ import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.utils.Config;
+import dev.mayuna.pumpk1n.Pumpk1n;
+import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
 import lombok.Getter;
 import org.slf4j.Logger;
 
@@ -41,6 +43,7 @@ public class Main {
     // Managers
     private @Getter SQLManager sqlManager;
     private @Getter AutologinManager autologinManager;
+    private @Getter Pumpk1n pumpk1n;
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) throws IOException {
@@ -90,6 +93,9 @@ public class Main {
     private void loadManagers() {
         autologinManager = new AutologinManager();
         autologinManager.init();
+
+        pumpk1n = new Pumpk1n(new FolderStorageHandler(config.getPumpk1n().getDataFolder()));
+        pumpk1n.prepareStorage();
     }
 
     private void loadListeners() {

@@ -17,6 +17,7 @@ public class Config {
     private final @Getter Plugin plugin = new Plugin();
     private final @Getter Autologin autologin = new Autologin();
     private final @Getter SQL sql = new SQL();
+    private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
 
     private Path dataDirectory = null;
     private Toml tomlFile = null;
@@ -67,6 +68,8 @@ public class Config {
         autologin.messages.runtimeError = tomlFile.getString("autologin.messages.runtimeError", "RUNTIME_ERROR");
         autologin.messages.autologinEnabled = tomlFile.getString("autologin.messages.autologinEnabled", "AUTOLOGIN_ENABLED");
         autologin.messages.autologinDisabled = tomlFile.getString("autologin.messages.autologinDisabled", "AUTOLOGIN_DISABLED");
+        autologin.messages.autologinEnabledForced = tomlFile.getString("autologin.messages.autologinEnabledForced", "AUTOLOGIN_ENABLED_FORCED");
+        autologin.messages.autologinDisabledForced = tomlFile.getString("autologin.messages.autologinDisabledForced", "AUTOLOGIN_DISABLED_FORCED");
 
         autologin.servers.auth = tomlFile.getString("autologin.servers.auth", "whub");
         autologin.servers.lobbies = tomlFile.getList("autologin.servers.lobbies", new LinkedList<>());
@@ -79,6 +82,8 @@ public class Config {
         sql.settings.minimumConnections = tomlFile.getLong("sql.settings.minimumConnections", 2L);
         sql.settings.maximumConnections = tomlFile.getLong("sql.settings.maximumConnections", 6L);
         sql.settings.timeout = tomlFile.getLong("sql.settings.timeout", 30000L);
+
+        pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
         Main.getInstance().getLogger().info("Config was loaded.");
     }
@@ -111,6 +116,8 @@ public class Config {
             private @Getter String runtimeError;
             private @Getter String autologinEnabled;
             private @Getter String autologinDisabled;
+            private @Getter String autologinEnabledForced;
+            private @Getter String autologinDisabledForced;
         }
 
         public static class Servers {
@@ -135,5 +142,10 @@ public class Config {
             private @Getter long maximumConnections;
             private @Getter long timeout;
         }
+    }
+
+    public static class Pumpk1n {
+
+        private @Getter String dataFolder;
     }
 }

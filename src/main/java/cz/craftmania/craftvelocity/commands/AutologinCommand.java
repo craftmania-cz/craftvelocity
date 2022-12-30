@@ -3,9 +3,11 @@ package cz.craftmania.craftvelocity.commands;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
+import dev.mayuna.pumpk1n.objects.DataHolder;
 import net.kyori.adventure.text.Component;
 
 import java.util.LinkedList;
@@ -38,7 +40,7 @@ public class AutologinCommand implements CraftCommand {
         String[] arguments = invocation.arguments();
 
         if (!(commandSource instanceof Player player)) {
-            Logger.error("Tento příkaz je pro hráče. V konzoli použij /autologin");
+            Logger.error("Tento příkaz je pro hráče. V konzoli použij //autologin");
             return;
         }
 
@@ -121,7 +123,21 @@ public class AutologinCommand implements CraftCommand {
                 }*/
 
                 case "ignore" -> {
+                    DataHolder playerDataHolder = Main.getInstance().getPumpk1n().getOrCreateDataHolder(player.getUniqueId());
 
+                    if (playerDataHolder.getDataElement(PlayerIgnoredAutologinMessageData.class) == null) {
+                        playerDataHolder.getOrCreateDataElement(PlayerIgnoredAutologinMessageData.class);
+                        playerDataHolder.save();
+
+                        ChatInfo.success(player, "Nyní se zpráva o autologinu již nezobrazí.");
+                    } else {
+                        playerDataHolder.removeDataElement(PlayerIgnoredAutologinMessageData.class);
+                        playerDataHolder.save();
+
+                        ChatInfo.success(player, "Zapnul sis zprávu o autologinu při připojení na server.");
+                    }
+
+                    return;
                 }
             }
 

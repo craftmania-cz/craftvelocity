@@ -4,6 +4,7 @@ import com.velocitypowered.api.command.CommandSource;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.cache.AutologinCache;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
+import cz.craftmania.craftvelocity.utils.Utils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -123,7 +124,9 @@ public class AutologinAdminCommand implements CraftCommand {
                             return;
                         }
 
-                        ChatInfo.success(source, "Úspěšně jste zapnuli autologin pro nick §e" + playerNick + "{c}!");
+                        Utils.kickPlayer(playerNick, Main.getInstance().getConfig().getAutologin().getMessages().getAutologinEnabledForced());
+
+                        ChatInfo.success(source, "Úspěšně jste zapnuli autologin pro nick §e" + playerNick + "{c}! Pokud hráč byl online, byl vykopnut.");
                     });
 
                     return;
@@ -137,7 +140,9 @@ public class AutologinAdminCommand implements CraftCommand {
                             return;
                         }
 
-                        ChatInfo.success(source, "Úspěšně jste vypnuli autologin pro nick §e" + playerNick + "{c}!");
+                        Utils.kickPlayer(playerNick, Main.getInstance().getConfig().getAutologin().getMessages().getAutologinDisabledForced());
+
+                        ChatInfo.success(source, "Úspěšně jste vypnuli autologin pro nick §e" + playerNick + "{c}! Pokud hráč byl online, byl vykopnut.");
                     });
 
                     return;

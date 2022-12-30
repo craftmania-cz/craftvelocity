@@ -1,5 +1,9 @@
 package cz.craftmania.craftvelocity.utils;
 
+import com.velocitypowered.api.proxy.Player;
+import cz.craftmania.craftvelocity.Main;
+import net.kyori.adventure.text.Component;
+
 import java.util.List;
 
 public class Utils {
@@ -25,5 +29,15 @@ public class Utils {
 
     public static void runUnmaintainedAsync(Runnable runnable) {
         new Thread(runnable).start();
+    }
+
+    public static void kickPlayer(String nick, String reason) {
+        Player player = Main.getInstance().getServer().getPlayer(nick).orElse(null);
+
+        if (player == null) {
+            return;
+        }
+
+        player.disconnect(Component.text(reason));
     }
 }
