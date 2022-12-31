@@ -1,8 +1,9 @@
-package cz.craftmania.craftvelocity.commands;
+package cz.craftmania.craftvelocity.commands.autologin;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.commands.CraftCommand;
 import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.ChatInfo;

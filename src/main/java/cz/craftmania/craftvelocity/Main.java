@@ -8,8 +8,9 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import cz.craftmania.craftvelocity.commands.AutologinAdminCommand;
-import cz.craftmania.craftvelocity.commands.AutologinCommand;
+import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
+import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
+import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
 import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
@@ -107,7 +108,11 @@ public class Main {
     private void loadCommands() {
         CommandManager commandManager = server.getCommandManager();
 
+        // Autologin
         new AutologinAdminCommand().registerCommand(commandManager);
         new AutologinCommand().registerCommand(commandManager);
+
+        // GlobalAdminChat
+        new GlobalAdminChatCommand().registerCommand(commandManager);
     }
 }

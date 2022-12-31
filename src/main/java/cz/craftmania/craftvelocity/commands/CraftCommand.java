@@ -6,6 +6,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.utils.Utils;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +26,9 @@ public interface CraftCommand extends SimpleCommand {
         commandManager.register(getCommandAlias(), this, getCommandAliases());
     }
 
-    List<String> getSuggestion(Invocation invocation, String[] arguments, int argumentsCount);
+    default List<String> getSuggestion(Invocation invocation, String[] arguments, int argumentsCount) {
+        return new LinkedList<>();
+    }
 
     @Override
     default List<String> suggest(Invocation invocation) {
