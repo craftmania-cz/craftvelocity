@@ -2,6 +2,7 @@ package cz.craftmania.craftvelocity.utils;
 
 import com.moandjiezana.toml.Toml;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.objects.GroupData;
 import lombok.Getter;
 
 import java.io.File;
@@ -9,8 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Config {
 
@@ -18,6 +18,8 @@ public class Config {
     private final @Getter Autologin autologin = new Autologin();
     private final @Getter SQL sql = new SQL();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
+    private final @Getter HelpCommands helpCommands = new HelpCommands();
+    private final @Getter VoteTokens voteTokens = new VoteTokens();
 
     private Path dataDirectory = null;
     private Toml tomlFile = null;
@@ -83,6 +85,10 @@ public class Config {
 
         pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
+        helpCommands.load(tomlFile);
+
+        voteTokens.amount = (int)(long)tomlFile.getLong("votetokens.amount");
+
         Main.getInstance().getLogger().info("Config was loaded.");
     }
 
@@ -143,5 +149,32 @@ public class Config {
     public static class Pumpk1n {
 
         private @Getter String dataFolder;
+    }
+
+    public static class HelpCommands {
+
+        private @Getter boolean defaultBlacklist;
+        private final @Getter List<String> defaults = new LinkedList<>();
+        private final @Getter Map<String, GroupData> groups = new HashMap<>();
+
+        public void load(Toml tomlFile) {
+            defaultBlacklist = tomlFile.getBoolean("help-commands.defaults.blacklist", false);
+            defaults.addAll(tomlFile.getList("help-commands.defaults.completions", new LinkedList<>()));
+
+            Toml tomlGroups = tomlFile.getTable("groups");
+
+            tomlGroups.toMap().forEach((key, value) -> {
+                String groupName = key;
+                boolean isWhitelist = !tomlFile.getBoolean(groupName + ".blacklist", defaultBlacklist);
+                List<String> completions = tomlGroups.getList(groupName + ".completions", new LinkedList<>());
+
+                groups.put(groupName, new GroupData(completions, isWhitelist));
+            });
+        }
+    }
+
+    public static class VoteTokens {
+
+        private @Getter int amount;
     }
 }

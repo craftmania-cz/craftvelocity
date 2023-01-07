@@ -2,6 +2,7 @@ package cz.craftmania.craftvelocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandManager;
+import com.velocitypowered.api.event.EventManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -11,7 +12,10 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
+import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
 import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
+import cz.craftmania.craftvelocity.listeners.EventNotifyListener;
+import cz.craftmania.craftvelocity.listeners.HelpCommandListener;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.utils.Config;
@@ -45,6 +49,9 @@ public class Main {
     private @Getter SQLManager sqlManager;
     private @Getter AutologinManager autologinManager;
     private @Getter Pumpk1n pumpk1n;
+
+    // Channels
+    public final static String CRAFTEVENTS_CHANNEL = "craftevents:plugin"; // Channel pro zasilani notifikaci pro zacatek eventu
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) throws IOException {
@@ -100,9 +107,14 @@ public class Main {
     }
 
     private void loadListeners() {
-        // Autologin
+        EventManager eventManager = server.getEventManager();
 
-        server.getEventManager().register(this, new AutologinConnectionListener());
+        // Autologin
+        eventManager.register(this, new AutologinConnectionListener());
+
+        // CraftBungee rewrite
+        eventManager.register(this, new EventNotifyListener());
+        eventManager.register(this, new HelpCommandListener());
     }
 
     private void loadCommands() {
@@ -114,5 +126,8 @@ public class Main {
 
         // GlobalAdminChat
         new GlobalAdminChatCommand().registerCommand(commandManager);
+
+        // Internal
+        new EventServerTpCommand().registerCommand(commandManager);
     }
 }

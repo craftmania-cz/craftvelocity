@@ -45,4 +45,8 @@ public class Logger {
     public static void sql(String message, SQLException exception) {
         Main.getInstance().getLogger().error("[SQL] " + message, exception);
     }
+
+    public static void vote(String message) {
+        info("[HLASOVANI] " + message);
+    }
 }

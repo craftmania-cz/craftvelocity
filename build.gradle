@@ -9,6 +9,7 @@ group = 'cz.craftmania'
 version = '1.0'
 
 repositories {
+    flatDir { dirs 'libs' }
     mavenCentral()
     maven {
         name = 'papermc-repo'
@@ -28,6 +29,9 @@ dependencies {
     // HikariCP / MySQL
     implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation 'mysql:mysql-connector-java:8.0.30'
+
+    // NuVotifier
+    compileOnly name: 'nuvotifier'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'

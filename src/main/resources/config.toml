@@ -40,3 +40,70 @@ lobbies = ["lobby"]
 
 [pumpk1n]
 dataFolder = "./pumpk1n/"
+
+# VoteTokens
+[votetokens]
+amount = 1
+
+# HelpCommands
+
+# Blokace nebo povoleni zobrazování příkazů z bungee.
+# Default skupina platí pro všechny, pokud je blacklist na true, tak glist nepůjde nikomu jako nápověda,
+# pokud je na false, tak půjde nápověda jenom třeba na /glist.
+[help-commands]
+    [defaults]
+        completions = [
+            "survival",
+            "skyblock",
+            "creative",
+            "vanilla",
+            "skycloud",
+            "lobby",
+            "whub",
+            "fr",
+            "friends",
+            "f",
+            "party",
+            "clan",
+            "ghelp",
+            "at",
+            "fmsg",
+            "groups",
+            "frb",
+            "cmsg"
+        ]
+    # Rozrazeni podle skupin, co by měli mít za nápovědy (blacklist: false), jinak jim nepujdou jenom ty nize vypsane.
+    [groups]
+        [staff] # craftvelocity.completions.group.staff
+            completions = [
+                "survival",
+                "skyblock",
+                "creative",
+                "vanilla",
+                "skycloud",
+                "lobby",
+                "whub",
+                "fr",
+                "friends",
+                "party",
+                "clan",
+                "ban",
+                "ipban",
+                "dupeip",
+                "kick",
+                "mute",
+                "tempmute",
+                "tempban",
+                "server",
+                "find",
+                "ghelp",
+                "at",
+                "fmsg",
+                "warn",
+                "dupeip",
+                "history",
+                "groups",
+                "frb",
+                "cmsg",
+                "unban"
+            ]
