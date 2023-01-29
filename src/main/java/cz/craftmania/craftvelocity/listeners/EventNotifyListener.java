@@ -61,6 +61,4 @@ public class EventNotifyListener {
             LazyUtils.sendMessageToPlayer(p,"");
         }
     }
-
-
 }

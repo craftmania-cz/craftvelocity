@@ -19,7 +19,7 @@ public class Config {
     private final @Getter SQL sql = new SQL();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
-    private final @Getter VoteTokens voteTokens = new VoteTokens();
+    private final @Getter Vote vote = new Vote();
 
     private Path dataDirectory = null;
     private Toml tomlFile = null;
@@ -87,7 +87,8 @@ public class Config {
 
         helpCommands.load(tomlFile);
 
-        voteTokens.amount = (int)(long)tomlFile.getLong("votetokens.amount");
+        vote.voteServers = tomlFile.getList("vote.voteservers", new LinkedList<>());
+        vote.voteTokens.amount = (int)(long)tomlFile.getLong("vote.votetokens.amount");
 
         Main.getInstance().getLogger().info("Config was loaded.");
     }
@@ -173,8 +174,14 @@ public class Config {
         }
     }
 
-    public static class VoteTokens {
+    public static class Vote {
 
-        private @Getter int amount;
+        private @Getter List<String> voteServers;
+        private @Getter VoteTokens voteTokens = new VoteTokens();
+
+        public static class VoteTokens {
+
+            private @Getter int amount;
+        }
     }
 }

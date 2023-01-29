@@ -27,6 +27,10 @@ public class SQLManager {
         pool.closePool();
     }
 
+    ////////////
+    // Tables //
+    ////////////
+
     public void createAutologinPlayersTable() {
         Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: N/A");
 
@@ -50,6 +54,10 @@ public class SQLManager {
             Logger.sql("Nastala chyba při vytváření SQL tabulky autologin_players", exception);
         }
     }
+
+    ///////////////
+    // Autologin //
+    ///////////////
 
     public CompletableFuture<AutologinPlayer> fetchAutologinPlayer(UUID uuid) {
         Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + uuid);
@@ -259,6 +267,167 @@ public class SQLManager {
                 }
             } catch (SQLException exception) {
                 Logger.sql("Nastala chyba při mazání AutologinPlayeru v tabulce autologin_players podle UUID " + uuid, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    //////////
+    // Vote //
+    //////////
+
+    public final long getLastVote(final String p) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + p);
+
+        try (Connection conn = pool.getConnection()) {
+            String sql = """
+                    SELECT last_vote FROM minigames.player_profile WHERE nick = ?;
+                    """;
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, p);
+
+                ps.executeQuery();
+
+                try (ResultSet rs = ps.getResultSet()) {
+                    if (rs.next()) {
+                        return rs.getLong("last_vote");
+                    }
+                }
+            }
+        } catch (SQLException exception) {
+            Logger.sql("Nastala chyba při získávání času posledního hlasu pro hráče " + p, exception);
+        }
+
+        return 0L;
+    }
+
+    public CompletableFuture<Void> addPlayerVote(String nick) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        UPDATE minigames.player_profile SET total_votes = total_votes + 1, week_votes = week_votes + 1, month_votes = month_votes + 1, vote_pass = vote_pass + 1, last_vote = ? WHERE nick = ?;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setLong(1, System.currentTimeMillis());
+                    ps.setString(2, nick);
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při připočítávání hlasu pro hráče " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    @Deprecated
+    public CompletableFuture<Void> addVoteToken(String nick, int voteTokens) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick + ", " + voteTokens);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = "UPDATE minigames.player_profile SET vote_tokens = vote_tokens + " + voteTokens + " WHERE nick = ?;";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, nick);
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při přidávání " + voteTokens + " votetokenů pro hráče " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+
+    }
+
+    @Deprecated
+    public CompletableFuture<Void> addVoteToken2(String nick, int voteTokens) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick + ", " + voteTokens);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = "UPDATE minigames.player_profile SET vote_tokens_2 = vote_tokens_2 + " + voteTokens + " WHERE nick = ?;";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, nick);
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při přidávání " + voteTokens + " votetokenů pro hráče " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Void> addVoteToken3(String nick, int voteTokens) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick + ", " + voteTokens);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = "UPDATE minigames.player_profile SET vote_tokens_3 = vote_tokens_3 + " + voteTokens + " WHERE nick = ?;";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, nick);
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při přidávání " + voteTokens + " votetokenů pro hráče " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Void> addCraftCoins(String nick, int coins) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + nick + ", " + coins);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = "UPDATE minigames.player_profile SET craft_coins = craft_coins + " + coins + " WHERE nick = ?;";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, nick);
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při přidávání " + coins + " CraftCoinů pro hráče " + nick, exception);
                 completableFuture.completeExceptionally(exception);
             }
         });

@@ -41,8 +41,15 @@ lobbies = ["lobby"]
 [pumpk1n]
 dataFolder = "./pumpk1n/"
 
+# Voting
+[vote]
+voteServers = [
+    "survival",
+    "creative"
+]
+
 # VoteTokens
-[votetokens]
+[vote.votetokens]
 amount = 1
 
 # HelpCommands

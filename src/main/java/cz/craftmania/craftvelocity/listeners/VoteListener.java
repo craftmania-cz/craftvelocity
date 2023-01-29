@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.vexsoftware.votifier.velocity.event.VotifierEvent;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.utils.Logger;
+import cz.craftmania.craftvelocity.utils.PluginMessageUtils;
 
 import java.util.Random;
 
@@ -14,15 +15,16 @@ public class VoteListener {
     @Subscribe
     public void onVote(VotifierEvent event) {
         Player player = Main.getInstance().getServer().getPlayer(event.getVote().getUsername()).orElse(null); // Pokud null -> hráč je offline
-        String username = player.getUsername();
 
         int coins = getChanceCoins(randRange(1, 100));
-        int votetokens = Main.getInstance().getConfig().getVoteTokens().getAmount();
+        int voteTokens = Main.getInstance().getConfig().getVote().getVoteTokens().getAmount();
 
         if (player != null) {
+            String username = player.getUsername();
+
             Logger.vote("Zpracování hlasu pro: " + username);
 
-            if (!(System.currentTimeMillis() > Main.getInstance().getSQLManager().getLastVote(player.getName()))) {
+            if (!(System.currentTimeMillis() > Main.getInstance().getSqlManager().getLastVote(username))) {
                 Logger.vote("Hrac " + username + " hlasoval driv nez za 2h.");
                 return;
             }
@@ -31,38 +33,38 @@ public class VoteListener {
             ServerConnection serverConnection = player.getCurrentServer().orElse(null);
 
             if (serverConnection == null) {
-                Logger.vote("Hrac se nenachazi na zadnem serveru. Hlas bude zaslan jakokdyby byl offline.");
-                // TODO: Offline hlas
+                Logger.vote("Hrac se nenachazí na zadnem serveru. Hlas bude zaslan jakokdyby byl offline.");
+                addOfflineVotes(username, voteTokens, coins);
                 return;
             }
 
-            // TODO: Přepsat tento zbytek
+            String server = serverConnection.getServerInfo().getName();
+
             boolean voteAdded = false;
-            for (String configServer : Main.getVoteServers()) {
+            for (String configServer : Main.getInstance().getConfig().getVote().getVoteServers()) {
                 if (configServer.equalsIgnoreCase(server)) {
-                    Main.getInstance().getLogger().log(Level.INFO, ChatColor.AQUA + "[Hlasovani]: Online zpracovani hlasu pro: " + player.getName() + ", coins: " + coins + ", votetokens: " + votetokens);
-                    BungeeUtils.sendMessageToBukkit("vote", player.getName(), String.valueOf(coins), String.valueOf(votetokens), player.getServer().getInfo());
+                    Logger.vote("Online zpracování hlasu pro hráče " + username + " (coins: " + coins + ", votetokens: " + voteTokens + ")");
+                    PluginMessageUtils.sendVoteMessage(serverConnection, username, String.valueOf(coins), String.valueOf(voteTokens));
                     voteAdded = true;
                     break;
                 }
             }
             if (!voteAdded) {
-                Main.getInstance().getLogger().log(Level.INFO, ChatColor.AQUA + "[Hlasovani]: Offline (online na serveru) zpracovani hlasu: " + player.getName() + ", coins: " + coins + ", votetokens: " + votetokens);
-                this.addOfflineVotes(e.getVote().getUsername(), votetokens, coins);
+                Logger.vote("Hráč " + username + " se nenacházel na žádném vote serveru. Hlas bude zpracován jako offline hlas. (coins: " + coins + ", votetokens: " + voteTokens + ")");
+                addOfflineVotes(username, voteTokens, coins);
             }
         } else {
-            if (!(System.currentTimeMillis() > Main.getInstance().getSQLManager().getLastVote(e.getVote().getUsername()))) {
-                Main.getInstance().getLogger().log(Level.INFO, ChatColor.AQUA + "[Hlasovani]: Hrac " + e.getVote().getUsername() + " hlasoval driv nez za 2h.");
+            String voteUsername = event.getVote().getUsername();
+
+            if (!(System.currentTimeMillis() > Main.getInstance().getSqlManager().getLastVote(voteUsername))) {
+                Logger.vote("Hrac " + voteUsername + " hlasoval driv nez za 2h.");
                 return;
             }
 
             // Kdyz je offline force to DB (obejit CraftEconomy)
-            Main.getInstance().getLogger().log(Level.INFO, ChatColor.AQUA + "[Hlasovani]: Offline zpracovani hlasu: " + e.getVote().getUsername() + ", coins: " + coins + ", votetokens: " + votetokens);
-            this.addOfflineVotes(e.getVote().getUsername(), votetokens, coins);
+            Logger.vote("Offline zpracování hlasu pro hráče " + voteUsername + " (coins: " + coins + ", votetokens: " + voteTokens + ")");
+            this.addOfflineVotes(voteUsername, voteTokens, coins);
         }
-
-
-
     }
 
     private int getChanceCoins(int chance) {
@@ -83,11 +85,10 @@ public class VoteListener {
     }
 
     private void addOfflineVotes(String nick, int voteTokens, int coins) {
-        Main.getInstance().getSQLManager().addPlayerVote(nick);
-        Main.getInstance().getSQLManager().addVoteToken(nick, voteTokens);
-        Main.getInstance().getSQLManager().addVoteToken2(nick, voteTokens);
-        Main.getInstance().getSQLManager().addVoteToken3(nick, voteTokens);
-        Main.getInstance().getSQLManager().addCraftCoins(nick, coins);
+        Main.getInstance().getSqlManager().addPlayerVote(nick);
+        Main.getInstance().getSqlManager().addVoteToken(nick, voteTokens); // FIXME: Odebrat deprecated metody?
+        Main.getInstance().getSqlManager().addVoteToken2(nick, voteTokens);
+        Main.getInstance().getSqlManager().addVoteToken3(nick, voteTokens);
+        Main.getInstance().getSqlManager().addCraftCoins(nick, coins);
     }
-
 }
