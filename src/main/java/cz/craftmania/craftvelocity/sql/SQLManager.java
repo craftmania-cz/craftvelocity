@@ -1,6 +1,7 @@
 package cz.craftmania.craftvelocity.sql;
 
 import com.google.common.util.concurrent.Futures;
+import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.Logger;
 import cz.craftmania.craftvelocity.utils.ReflectionUtils;
@@ -428,6 +429,35 @@ public class SQLManager {
 
             } catch (SQLException exception) {
                 Logger.sql("Nastala chyba při přidávání " + coins + " CraftCoinů pro hráče " + nick, exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<Void> updateStats(Player player, boolean online) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1) + " s argumenty: " + player + ", " + online);
+
+        CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = "UPDATE minigames.player_profile SET last_server = ?, last_online = ?, is_online = ?, mc_version = ? WHERE nick = ?;";
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    ps.setString(1, Utils.getPlayerServerName(player));
+                    ps.setLong(2, System.currentTimeMillis());
+                    ps.setString(3, online ? "1" : "0");
+                    ps.setString(4, player.getProtocolVersion().getMostRecentSupportedVersion());
+                    ps.setString(5, player.getUsername());
+                    ps.executeUpdate();
+
+                    completableFuture.complete(null);
+                }
+
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při aktualizace statů pro hráče " + player.getUsername() + " (online: " + online + ")", exception);
                 completableFuture.completeExceptionally(exception);
             }
         });

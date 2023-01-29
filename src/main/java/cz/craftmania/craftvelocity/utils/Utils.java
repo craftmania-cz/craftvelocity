@@ -1,6 +1,7 @@
 package cz.craftmania.craftvelocity.utils;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
 import cz.craftmania.craftvelocity.Main;
 import net.kyori.adventure.text.Component;
 
@@ -39,5 +40,15 @@ public class Utils {
         }
 
         player.disconnect(Component.text(reason));
+    }
+
+    public static String getPlayerServerName(Player player) {
+        ServerConnection serverConnection = player.getCurrentServer().orElse(null);
+
+        if (serverConnection == null) {
+            return "hub";
+        }
+
+        return serverConnection.getServerInfo().getName();
     }
 }
