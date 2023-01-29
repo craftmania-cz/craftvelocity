@@ -9,6 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import cz.craftmania.craftvelocity.api.proxycheck.ProxyCheckAPI;
 import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
@@ -89,6 +90,8 @@ public class Main {
         config = new Config(dataDirectory);
         config.loadFile();
         config.loadConfig();
+
+        ProxyCheckAPI.setApiKey(config.getProxyCheck().getApiKey());
     }
 
     private void loadSQL() {
@@ -115,6 +118,7 @@ public class Main {
         eventManager.register(this, new HelpCommandListener());
         eventManager.register(this, new PlayerListener());
         eventManager.register(this, new VoteListener());
+        eventManager.register(this, new VPNListener());
     }
 
     private void loadCommands() {

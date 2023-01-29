@@ -38,6 +38,9 @@ lobbies = ["lobby"]
 
 # Misc
 
+[proxycheck]
+apiKey = "xxxx"
+
 [pumpk1n]
 dataFolder = "./pumpk1n/"
 

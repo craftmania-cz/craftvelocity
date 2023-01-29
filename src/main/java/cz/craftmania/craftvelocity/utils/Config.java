@@ -2,6 +2,7 @@ package cz.craftmania.craftvelocity.utils;
 
 import com.moandjiezana.toml.Toml;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.api.proxycheck.Objects.ProxyCheckResult;
 import cz.craftmania.craftvelocity.objects.GroupData;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class Config {
     private final @Getter Plugin plugin = new Plugin();
     private final @Getter Autologin autologin = new Autologin();
     private final @Getter SQL sql = new SQL();
+    private final @Getter ProxyCheck proxyCheck = new ProxyCheck();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
     private final @Getter Vote vote = new Vote();
@@ -83,6 +85,8 @@ public class Config {
         sql.settings.maximumConnections = tomlFile.getLong("sql.settings.maximumConnections", 6L);
         sql.settings.timeout = tomlFile.getLong("sql.settings.timeout", 30000L);
 
+        proxyCheck.apiKey = tomlFile.getString("proxycheck.apiKey");
+
         pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
         helpCommands.load(tomlFile);
@@ -145,6 +149,11 @@ public class Config {
             private @Getter long maximumConnections;
             private @Getter long timeout;
         }
+    }
+
+    public static class ProxyCheck {
+
+        private @Getter String apiKey;
     }
 
     public static class Pumpk1n {

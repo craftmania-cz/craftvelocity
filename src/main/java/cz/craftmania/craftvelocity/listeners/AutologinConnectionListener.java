@@ -1,6 +1,7 @@
 package cz.craftmania.craftvelocity.listeners;
 
 import com.velocitypowered.api.event.Continuation;
+import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
@@ -19,8 +20,12 @@ import net.kyori.adventure.text.event.HoverEvent;
 
 public class AutologinConnectionListener {
 
-    @Subscribe
+    @Subscribe(order = PostOrder.LAST)
     public void onPlayerPreLogin(PreLoginEvent event, Continuation continuation) {
+        if (!event.getResult().isAllowed()) {
+            return;
+        }
+
         Main.getInstance().getAutologinManager().processPreLoginEvent(event, continuation);
     }
 

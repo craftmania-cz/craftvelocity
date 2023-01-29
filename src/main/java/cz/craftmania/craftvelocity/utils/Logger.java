@@ -49,4 +49,12 @@ public class Logger {
     public static void vote(String message) {
         info("[HLASOVANI] " + message);
     }
+
+    public static void vpn(String message) {
+        info("[VPN] " + message);
+    }
+
+    public static void vpn(String message, Throwable throwable) {
+        error("[VPN] " + message, throwable);
+    }
 }
