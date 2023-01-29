@@ -13,9 +13,7 @@ import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
 import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
-import cz.craftmania.craftvelocity.listeners.AutologinConnectionListener;
-import cz.craftmania.craftvelocity.listeners.EventNotifyListener;
-import cz.craftmania.craftvelocity.listeners.HelpCommandListener;
+import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.utils.Config;
@@ -115,6 +113,8 @@ public class Main {
         // CraftBungee rewrite
         eventManager.register(this, new EventNotifyListener());
         eventManager.register(this, new HelpCommandListener());
+        eventManager.register(this, new PlayerListener());
+        eventManager.register(this, new VoteListener());
     }
 
     private void loadCommands() {
