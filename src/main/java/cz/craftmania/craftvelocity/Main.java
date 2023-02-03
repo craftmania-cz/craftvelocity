@@ -16,7 +16,9 @@ import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
 import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
 import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
+import cz.craftmania.craftvelocity.managers.CraftTaskManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
+import cz.craftmania.craftvelocity.tasks.ConnectionWhitelistUpdateTask;
 import cz.craftmania.craftvelocity.utils.Config;
 import dev.mayuna.pumpk1n.Pumpk1n;
 import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
@@ -45,6 +47,7 @@ public class Main {
     private @Inject @Getter @DataDirectory Path dataDirectory;
 
     // Managers
+    private @Getter CraftTaskManager craftTaskManager;
     private @Getter SQLManager sqlManager;
     private @Getter AutologinManager autologinManager;
     private @Getter Pumpk1n pumpk1n;
@@ -68,6 +71,9 @@ public class Main {
 
         logger.info("Loading managers...");
         loadManagers();
+
+        logger.info("Loading tasks...");
+        loadTasks();
 
         logger.info("Loading listeners...");
         loadListeners();
@@ -100,11 +106,17 @@ public class Main {
     }
 
     private void loadManagers() {
+        craftTaskManager = new CraftTaskManager();
+
         autologinManager = new AutologinManager();
         autologinManager.init();
 
         pumpk1n = new Pumpk1n(new FolderStorageHandler(config.getPumpk1n().getDataFolder()));
         pumpk1n.prepareStorage();
+    }
+
+    private void loadTasks() {
+        craftTaskManager.register(new ConnectionWhitelistUpdateTask());
     }
 
     private void loadListeners() {

@@ -2,7 +2,6 @@ package cz.craftmania.craftvelocity.utils;
 
 import com.moandjiezana.toml.Toml;
 import cz.craftmania.craftvelocity.Main;
-import cz.craftmania.craftvelocity.api.proxycheck.Objects.ProxyCheckResult;
 import cz.craftmania.craftvelocity.objects.GroupData;
 import lombok.Getter;
 
@@ -19,6 +18,7 @@ public class Config {
     private final @Getter Autologin autologin = new Autologin();
     private final @Getter SQL sql = new SQL();
     private final @Getter ProxyCheck proxyCheck = new ProxyCheck();
+    private final @Getter ConnectionWhitelist connectionWhitelist = new ConnectionWhitelist();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
     private final @Getter Vote vote = new Vote();
@@ -85,7 +85,13 @@ public class Config {
         sql.settings.maximumConnections = tomlFile.getLong("sql.settings.maximumConnections", 6L);
         sql.settings.timeout = tomlFile.getLong("sql.settings.timeout", 30000L);
 
-        proxyCheck.apiKey = tomlFile.getString("proxycheck.apiKey");
+        proxyCheck.apiKey = tomlFile.getString("proxycheck.apiKey", "Proxycheck API Key");
+        proxyCheck.messages.vpn = tomlFile.getString("proxycheck.messages.vpn", "IP_IS_VPN_ERROR");
+        proxyCheck.messages.foreignIP = tomlFile.getString("proxycheck.messages.foreignIP", "IP_IS_NOT_CZ_OR_SK_ERROR");
+        proxyCheck.messages.blockedASN = tomlFile.getString("proxycheck.messages.blockedASN", "BLOCKED_ASN_ERROR");
+
+        connectionWhitelist.updater.delayMillis = tomlFile.getLong("connectionwhitelist.updater.delayMillis", 10_000L);
+        connectionWhitelist.updater.intervalMillis = tomlFile.getLong("connectionwhitelist.updater.intervalMillis", 60_000L);
 
         pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
@@ -153,7 +159,26 @@ public class Config {
 
     public static class ProxyCheck {
 
+        private final @Getter Messages messages = new Messages();
         private @Getter String apiKey;
+
+        public static class Messages{
+
+            private @Getter String vpn;
+            private @Getter String foreignIP;
+            private @Getter String blockedASN;
+        }
+    }
+
+    public static class ConnectionWhitelist {
+
+        private final @Getter Updater updater = new Updater();
+
+        public static class Updater {
+
+            private @Getter long delayMillis;
+            private @Getter long intervalMillis;
+        }
     }
 
     public static class Pumpk1n {

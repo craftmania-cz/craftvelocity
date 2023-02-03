@@ -1,8 +1,10 @@
 package cz.craftmania.craftvelocity.sql;
 
-import com.google.common.util.concurrent.Futures;
 import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
+import cz.craftmania.craftvelocity.objects.connectionwhitelist.BlacklistedASN;
+import cz.craftmania.craftvelocity.objects.connectionwhitelist.WhitelistedIP;
+import cz.craftmania.craftvelocity.objects.connectionwhitelist.WhitelistedName;
 import cz.craftmania.craftvelocity.utils.Logger;
 import cz.craftmania.craftvelocity.utils.ReflectionUtils;
 import cz.craftmania.craftvelocity.utils.Utils;
@@ -13,8 +15,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 public class SQLManager {
 
@@ -458,6 +463,111 @@ public class SQLManager {
 
             } catch (SQLException exception) {
                 Logger.sql("Nastala chyba při aktualizace statů pro hráče " + player.getUsername() + " (online: " + online + ")", exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    //////////////////////////
+    // Connection Whitelist //
+    //////////////////////////
+
+    public CompletableFuture<List<WhitelistedName>> fetchWhitelistedNames() {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        CompletableFuture<List<WhitelistedName>> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        SELECT * FROM minigames.name_whitelist;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    try (ResultSet rs = ps.executeQuery()) {
+                        List<WhitelistedName> whitelistedNames = new LinkedList<>();
+
+                        while (rs.next()) {
+                            String nick = rs.getString("nick");
+                            String description = rs.getString("description");
+
+                            whitelistedNames.add(new WhitelistedName(nick, description));
+                        }
+
+                        completableFuture.complete(whitelistedNames);
+                    }
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při získávání whitelisted nicků!", exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<List<WhitelistedIP>> fetchWhitelistedIPs() {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        CompletableFuture<List<WhitelistedIP>> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        SELECT * FROM minigames.ip_whitelist;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    try (ResultSet rs = ps.executeQuery()) {
+                        List<WhitelistedIP> whitelistedIPs = new LinkedList<>();
+
+                        while (rs.next()) {
+                            Pattern address = Pattern.compile(rs.getString("address"));
+                            String description = rs.getString("description");
+
+                            whitelistedIPs.add(new WhitelistedIP(address, description));
+                        }
+
+                        completableFuture.complete(whitelistedIPs);
+                    }
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při získávání whitelisted IPs!", exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<List<BlacklistedASN>> fetchBlacklistedASNs() {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        CompletableFuture<List<BlacklistedASN>> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        SELECT * FROM minigames.blacklisted_asns;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    try (ResultSet rs = ps.executeQuery()) {
+                        List<BlacklistedASN> blacklistedASNs = new LinkedList<>();
+
+                        while (rs.next()) {
+                            String asn = rs.getString("asn");
+
+                            blacklistedASNs.add(new BlacklistedASN(asn));
+                        }
+
+                        completableFuture.complete(blacklistedASNs);
+                    }
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při získávání blacklisted ASNs!", exception);
                 completableFuture.completeExceptionally(exception);
             }
         });

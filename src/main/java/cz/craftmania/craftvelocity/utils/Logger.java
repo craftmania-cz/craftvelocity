@@ -54,7 +54,19 @@ public class Logger {
         info("[VPN] " + message);
     }
 
-    public static void vpn(String message, Throwable throwable) {
+    public static void vpnWarning(String message) {
+        warning("[VPN] " + message);
+    }
+
+    public static void vpnError(String message) {
+        error("[VPN] " + message);
+    }
+
+    public static void vpnError(String message, Throwable throwable) {
         error("[VPN] " + message, throwable);
+    }
+
+    public static void connectionWhitelist(String message) {
+        info("[CONNECTION-WHITELIST-UPDATER] " + message);
     }
 }
