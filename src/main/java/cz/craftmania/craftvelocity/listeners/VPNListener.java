@@ -27,7 +27,8 @@ public class VPNListener {
     private static final @Getter List<WhitelistedIP> whitelistedIPs = Collections.synchronizedList(new LinkedList<>());
     private static final @Getter List<BlacklistedASN> blacklistedASNs = Collections.synchronizedList(new LinkedList<>());
 
-    @Subscribe(order = PostOrder.LATE)
+    // Chceme tuto kontrolu nechat jako poslední, jelikož dotazuje free tier proxychecku
+    @Subscribe(order = PostOrder.LAST)
     public void onPreLogin(PreLoginEvent event) {
         if (!event.getResult().isAllowed()) {
             return;

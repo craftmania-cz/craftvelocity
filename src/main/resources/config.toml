@@ -52,6 +52,9 @@ blockedASN = "§cTvůj poskytovatel je na blacklistu §7+ §enemáš odehráno 1
 delayMillis = 10000
 intervalMillis = 60000
 
+[nickblacklist.messages]
+blacklistedWords = "§cTvůj nick obsahuje slova, která jsou zakázana.\n\n§fPokud si myslíš, že to tak není, založ\n§fsi ticket u nás na Discordu: §ehttps://discord.gg/craftmania"
+
 [pumpk1n]
 dataFolder = "./pumpk1n/"
 

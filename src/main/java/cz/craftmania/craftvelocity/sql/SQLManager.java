@@ -574,4 +574,70 @@ public class SQLManager {
 
         return completableFuture;
     }
+
+    public CompletableFuture<List<String>> fetchAllowedBlacklistedNicks() {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        SELECT * FROM minigames.allowed_blacklisted_names;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    try (ResultSet rs = ps.executeQuery()) {
+                        List<String> whitelistedNicks = new LinkedList<>();
+
+                        while (rs.next()) {
+                            String nick = rs.getString("nick");
+
+                            whitelistedNicks.add(nick);
+                        }
+
+                        completableFuture.complete(whitelistedNicks);
+                    }
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při získávání povolených nicků s zablokováným slovem!", exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
+
+    public CompletableFuture<List<String>> fetchBlacklistedWords() {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        CompletableFuture<List<String>> completableFuture = new CompletableFuture<>();
+
+        Utils.runAsync(() -> {
+            try (Connection conn = pool.getConnection()) {
+                String sql = """
+                        SELECT * FROM minigames.blacklisted_name_words;
+                        """;
+
+                try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                    try (ResultSet rs = ps.executeQuery()) {
+                        List<String> blacklistedWords = new LinkedList<>();
+
+                        while (rs.next()) {
+                            String word = rs.getString("word");
+
+                            blacklistedWords.add(word);
+                        }
+
+                        completableFuture.complete(blacklistedWords);
+                    }
+                }
+            } catch (SQLException exception) {
+                Logger.sql("Nastala chyba při získávání blacklisted nick slov!", exception);
+                completableFuture.completeExceptionally(exception);
+            }
+        });
+
+        return completableFuture;
+    }
 }

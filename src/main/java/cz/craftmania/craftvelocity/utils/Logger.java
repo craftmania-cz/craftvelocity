@@ -66,6 +66,14 @@ public class Logger {
         error("[VPN] " + message, throwable);
     }
 
+    public static void nickBlacklist(String message) {
+        info("[NICK-BLACKLIST] " + message);
+    }
+
+    public static void nickBlacklistDebug(String message) {
+        debug("[NICK-BLACKLIST] " + message);
+    }
+
     public static void connectionWhitelist(String message) {
         info("[CONNECTION-WHITELIST-UPDATER] " + message);
     }
