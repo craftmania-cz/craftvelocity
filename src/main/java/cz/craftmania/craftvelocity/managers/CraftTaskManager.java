@@ -42,7 +42,9 @@ public class CraftTaskManager {
     }
 
     private void runTask(CraftTask craftTask) {
-        Logger.debug("[TASK] Byl spuštěn task s názvem " + craftTask.getName() + " (timer task: " + (craftTask instanceof CraftTaskTimer) + ")");
+        if (craftTask.logStartAndFinish()) {
+            Logger.debug("[TASK] Byl spuštěn task s názvem " + craftTask.getName() + " (timer task: " + (craftTask instanceof CraftTaskTimer) + ")");
+        }
         long start = System.currentTimeMillis();
         boolean successful = true;
 
@@ -53,6 +55,8 @@ public class CraftTaskManager {
             successful = false;
         }
 
-        Logger.debug("[TASK] Task s názvem " + craftTask.getName() + " (timer task: " + (craftTask instanceof CraftTaskTimer) + ") byl dokončen (úspěšně: " + successful + ") v čase " + (System.currentTimeMillis() - start) + "ms");
+        if (craftTask.logStartAndFinish()) {
+            Logger.debug("[TASK] Task s názvem " + craftTask.getName() + " (timer task: " + (craftTask instanceof CraftTaskTimer) + ") byl dokončen (úspěšně: " + successful + ") v čase " + (System.currentTimeMillis() - start) + "ms");
+        }
     }
 }

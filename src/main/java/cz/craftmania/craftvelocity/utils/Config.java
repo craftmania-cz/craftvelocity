@@ -20,6 +20,7 @@ public class Config {
     private final @Getter ProxyCheck proxyCheck = new ProxyCheck();
     private final @Getter ConnectionWhitelist connectionWhitelist = new ConnectionWhitelist();
     private final @Getter NickBlacklist nickBlacklist = new NickBlacklist();
+    private final @Getter JoinRateLimit joinRateLimit = new JoinRateLimit();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
     private final @Getter Vote vote = new Vote();
@@ -95,6 +96,11 @@ public class Config {
         connectionWhitelist.updater.intervalMillis = tomlFile.getLong("connectionwhitelist.updater.intervalMillis", 60_000L);
 
         nickBlacklist.messages.blacklistedWords = tomlFile.getString("nickblacklist.messages.blacklistedWords", "BLACKLISTED_WORDS_IN_NICK_ERROR");
+
+        joinRateLimit.joinLimit = tomlFile.getLong("joinratelimit.joinLimit", 10L);
+        joinRateLimit.delayMillis = tomlFile.getLong("joinratelimit.delayMillis", 0L);
+        joinRateLimit.intervalMillis = tomlFile.getLong("joinratelimit.intervalMillis", 300L);
+        joinRateLimit.messages.limitReached = tomlFile.getString("joinratelimit.messages.limitReached", "JOIN_RATE_LIMIT_REACHED");
 
         pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
@@ -191,6 +197,19 @@ public class Config {
         public static class Messages {
 
             private @Getter String blacklistedWords;
+        }
+    }
+
+    public static class JoinRateLimit {
+
+        private final @Getter Messages messages = new Messages();
+        private @Getter long joinLimit;
+        private @Getter long delayMillis;
+        private @Getter long intervalMillis;
+
+        public static class Messages {
+
+            private @Getter String limitReached;
         }
     }
 

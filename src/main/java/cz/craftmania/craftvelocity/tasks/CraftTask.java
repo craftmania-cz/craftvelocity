@@ -6,4 +6,7 @@ public interface CraftTask extends Runnable {
 
     long getDelay();
 
+    default boolean logStartAndFinish() {
+        return true;
+    }
 }

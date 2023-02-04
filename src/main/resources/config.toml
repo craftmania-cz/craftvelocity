@@ -55,6 +55,14 @@ intervalMillis = 60000
 [nickblacklist.messages]
 blacklistedWords = "§cTvůj nick obsahuje slova, která jsou zakázana.\n\n§fPokud si myslíš, že to tak není, založ\n§fsi ticket u nás na Discordu: §ehttps://discord.gg/craftmania"
 
+[joinratelimit]
+joinLimit = 10
+delayMillis = 0
+intervalMillis = 0
+
+[joinratelimit.messages]
+limitReached = "§cDočasně se nelze připojit.\n\n§7Na server se připojuje moc hráčů, počkej chvilku a zkus to znovu."
+
 [pumpk1n]
 dataFolder = "./pumpk1n/"
 

@@ -19,6 +19,7 @@ import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.managers.CraftTaskManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.tasks.ConnectionWhitelistUpdateTask;
+import cz.craftmania.craftvelocity.tasks.JoinRateLimitResetterTask;
 import cz.craftmania.craftvelocity.utils.Config;
 import dev.mayuna.pumpk1n.Pumpk1n;
 import dev.mayuna.pumpk1n.impl.FolderStorageHandler;
@@ -117,6 +118,7 @@ public class Main {
 
     private void loadTasks() {
         craftTaskManager.register(new ConnectionWhitelistUpdateTask());
+        craftTaskManager.register(new JoinRateLimitResetterTask());
     }
 
     private void loadListeners() {
