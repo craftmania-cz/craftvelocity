@@ -21,6 +21,7 @@ public class Config {
     private final @Getter ConnectionWhitelist connectionWhitelist = new ConnectionWhitelist();
     private final @Getter NickBlacklist nickBlacklist = new NickBlacklist();
     private final @Getter JoinRateLimit joinRateLimit = new JoinRateLimit();
+    private final @Getter PlayerUpdateTask playerUpdateTask = new PlayerUpdateTask();
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
     private final @Getter Vote vote = new Vote();
@@ -101,6 +102,9 @@ public class Config {
         joinRateLimit.delayMillis = tomlFile.getLong("joinratelimit.delayMillis", 0L);
         joinRateLimit.intervalMillis = tomlFile.getLong("joinratelimit.intervalMillis", 300L);
         joinRateLimit.messages.limitReached = tomlFile.getString("joinratelimit.messages.limitReached", "JOIN_RATE_LIMIT_REACHED");
+
+        playerUpdateTask.delayMillis = tomlFile.getLong("playerupdatetask.delayMillis", 60000L);
+        playerUpdateTask.intervalMillis = tomlFile.getLong("playerupdatetask.intervalMillis", 60000L);
 
         pumpk1n.dataFolder = tomlFile.getString("pumpk1n.dataFolder", "./pumpk1n/");
 
@@ -211,6 +215,12 @@ public class Config {
 
             private @Getter String limitReached;
         }
+    }
+
+    public static class PlayerUpdateTask {
+
+        private @Getter long delayMillis;
+        private @Getter long intervalMillis;
     }
 
     public static class Pumpk1n {

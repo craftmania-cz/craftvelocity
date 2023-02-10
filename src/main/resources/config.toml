@@ -58,10 +58,14 @@ blacklistedWords = "§cTvůj nick obsahuje slova, která jsou zakázana.\n\n§fP
 [joinratelimit]
 joinLimit = 10
 delayMillis = 0
-intervalMillis = 0
+intervalMillis = 300
 
 [joinratelimit.messages]
 limitReached = "§cDočasně se nelze připojit.\n\n§7Na server se připojuje moc hráčů, počkej chvilku a zkus to znovu."
+
+[playerupdatetask]
+delayMillis = 60000
+intervalMillis = 60000
 
 [pumpk1n]
 dataFolder = "./pumpk1n/"

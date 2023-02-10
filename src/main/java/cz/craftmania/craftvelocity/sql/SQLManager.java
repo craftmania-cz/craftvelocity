@@ -5,6 +5,7 @@ import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.objects.connectionwhitelist.BlacklistedASN;
 import cz.craftmania.craftvelocity.objects.connectionwhitelist.WhitelistedIP;
 import cz.craftmania.craftvelocity.objects.connectionwhitelist.WhitelistedName;
+import cz.craftmania.craftvelocity.utils.LazyUtils;
 import cz.craftmania.craftvelocity.utils.Logger;
 import cz.craftmania.craftvelocity.utils.ReflectionUtils;
 import cz.craftmania.craftvelocity.utils.Utils;
@@ -639,5 +640,32 @@ public class SQLManager {
         });
 
         return completableFuture;
+    }
+
+    //////////////////////
+    // PlayerUpdateTask //
+    //////////////////////
+
+    public void updateTime(Player player) {
+        Logger.debugSQL("Metoda " + ReflectionUtils.getMethodNameByIndex(2) + " zavolalo metodu " + ReflectionUtils.getMethodNameByIndex(1));
+
+        String playerServer = Utils.getPlayerServerName(player);
+
+        // Nebude to async kvůli tomu ať nespamujeme konzoli x async taskama
+
+        try (Connection conn = pool.getConnection()) {
+            String sql = """
+                    UPDATE minigames.player_profile SET played_time = played_time + 1, last_server = ? WHERE nick = ?;
+                    """;
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setString(1, playerServer);
+                ps.setString(2, player.getUsername());
+
+                ps.executeUpdate();
+            }
+        } catch (SQLException exception) {
+            Logger.sql("Nastala chyba při aktualizace hráče " + player.getUsername() + "!", exception);
+        }
     }
 }
