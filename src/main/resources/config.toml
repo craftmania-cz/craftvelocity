@@ -67,6 +67,9 @@ limitReached = "§cDočasně se nelze připojit.\n\n§7Na server se připojuje m
 delayMillis = 60000
 intervalMillis = 60000
 
+[ghelp]
+cooldownMillis = 60000
+
 [pumpk1n]
 dataFolder = "./pumpk1n/"
 

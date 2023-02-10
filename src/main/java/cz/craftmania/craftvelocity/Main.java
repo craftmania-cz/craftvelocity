@@ -10,6 +10,7 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import cz.craftmania.craftvelocity.api.proxycheck.ProxyCheckAPI;
+import cz.craftmania.craftvelocity.commands.GHelpCommand;
 import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
@@ -17,6 +18,7 @@ import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
 import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.managers.CraftTaskManager;
+import cz.craftmania.craftvelocity.managers.GHelpManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.tasks.ConnectionWhitelistUpdateTask;
 import cz.craftmania.craftvelocity.tasks.JoinRateLimitResetterTask;
@@ -53,6 +55,7 @@ public class Main {
     private @Getter SQLManager sqlManager;
     private @Getter AutologinManager autologinManager;
     private @Getter Pumpk1n pumpk1n;
+    private @Getter GHelpManager ghelpManager;
 
     // Channels
     public final static String CRAFTEVENTS_CHANNEL = "craftevents:plugin"; // Channel pro zasilani notifikaci pro zacatek eventu
@@ -115,6 +118,8 @@ public class Main {
 
         pumpk1n = new Pumpk1n(new FolderStorageHandler(config.getPumpk1n().getDataFolder()));
         pumpk1n.prepareStorage();
+
+        ghelpManager = new GHelpManager();
     }
 
     private void loadTasks() {
@@ -150,5 +155,8 @@ public class Main {
 
         // Internal
         new EventServerTpCommand().registerCommand(commandManager);
+
+        // GHelp
+        new GHelpCommand().registerCommand(commandManager);
     }
 }
