@@ -5,6 +5,7 @@ import com.velocitypowered.api.proxy.Player;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.commands.CraftCommand;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
+import cz.craftmania.craftvelocity.utils.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -89,6 +90,8 @@ public class GlobalAdminChatCommand implements CraftCommand {
                 .hoverEvent(HoverEvent.showText(Component.text("§7Server: §e" + playerServer + "\n\n§7Kliknutím se připojíš")))
                 .clickEvent(ClickEvent.runCommand("/server " + playerServer))
                 .append(Component.text("§e" + String.join(" ", arguments)));
+
+        Logger.info("[GACHAT] " + playerNick + ": " + String.join(" ", arguments));
 
         Main.getInstance().getServer().getAllPlayers().forEach(player -> {
             boolean hasPermission = false;

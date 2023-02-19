@@ -11,6 +11,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import cz.craftmania.craftvelocity.api.proxycheck.ProxyCheckAPI;
 import cz.craftmania.craftvelocity.commands.GHelpCommand;
+import cz.craftmania.craftvelocity.commands.admin.GhelpAdminCommand;
 import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
@@ -158,5 +159,6 @@ public class Main {
 
         // GHelp
         new GHelpCommand().registerCommand(commandManager);
+        new GhelpAdminCommand().registerCommand(commandManager);
     }
 }

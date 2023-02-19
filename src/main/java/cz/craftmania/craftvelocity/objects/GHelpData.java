@@ -48,7 +48,7 @@ public class GHelpData {
 
         Component buttonTeleportComponent = Component.text("§b[TELE]§r ")
                                                      .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím se teleportuješ na hráčův server.")))
-                                                     .clickEvent(ClickEvent.runCommand("/server " + getPlayerUsername()));
+                                                     .clickEvent(ClickEvent.runCommand("/server " + getPlayerServer()));
 
         Component buttonDeleteComponent = Component.text("§b[DEL]§r ")
                                                    .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím doplníš příkaz k smazání zprávy.")))
