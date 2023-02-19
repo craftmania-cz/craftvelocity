@@ -40,43 +40,17 @@ public class GhelpAdminCommand implements CraftCommand {
         if (arguments.length == 1) {
             switch (arguments[0]) {
                 case "list" -> {
-                    player.sendMessage(Component.text(""));
+                    player.sendMessage(Component.text("§r"));
                     player.sendMessage(Component.text("§7§l§m--------§r§7[ §e§lSeznam posledních GHelp zprav §7]§m--------"));
-                    player.sendMessage(Component.text(""));
+                    player.sendMessage(Component.text("§r"));
                     player.sendMessage(Component.text("    §7§oNajetím na nick uvidíš, odkud byla zpráva poslána."));
                     player.sendMessage(Component.text("    §7§oPo najetí na zprávu uvidíš čas odeslání."));
-                    player.sendMessage(Component.text(""));
+                    player.sendMessage(Component.text("§r"));
 
                     List<GHelpData> gHelpDataList = Main.getInstance().getGhelpManager().getGHelpDataList();
 
                     gHelpDataList.forEach(gHelpData -> {
-                        Component finalComponent = Component.text("");
-
-                        Component buttonRespondComponent = Component.text("§b[ODP]§r ")
-                                                                    .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím doplníš příkaz k odpovědi.")))
-                                                                    .clickEvent(ClickEvent.suggestCommand("//ghelp respond " + gHelpData.getMessageUUID() + " "));
-
-                        Component buttonTeleportComponent = Component.text("§b[TELE]§r ")
-                                                                     .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím se teleportuješ na hráčův server.")))
-                                                                     .clickEvent(ClickEvent.runCommand("/server " + gHelpData.getPlayerUsername()));
-
-                        Component buttonDeleteComponent = Component.text("§b[DEL]§r ")
-                                                                   .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím doplníš příkaz k smazání zprávy.")))
-                                                                   .clickEvent(ClickEvent.runCommand("//ghelp delete " + gHelpData.getMessageUUID()));
-
-                        Component playerNickComponent = Component.text("§e" + gHelpData.getPlayerUsername() + "§7: ")
-                                                                 .hoverEvent(HoverEvent.showText(Component.text("§7Odesláno: §e" + gHelpData.formatTime() + "\n" +
-                                                                                                                        "§7Server: §e" + gHelpData.getPlayerServer() + "\n" +
-                                                                                                                        "§7Hráč je: " + (gHelpData.isPlayerOnline() ? "§aOnline" : "§cOffline"))))
-                                                                 .clickEvent(ClickEvent.suggestCommand("//ghelp respond " + gHelpData.getMessageUUID() + " "));
-
-                        Component messageComponent = Component.text(gHelpData.getMessage());
-
-                        player.sendMessage(finalComponent.append(buttonRespondComponent)
-                                                         .append(buttonTeleportComponent)
-                                                         .append(buttonDeleteComponent)
-                                                         .append(playerNickComponent)
-                                                         .append(messageComponent));
+                        player.sendMessage(gHelpData.generateChatMessage());
                     });
 
                     player.sendMessage(Component.text("§r"));
@@ -138,7 +112,7 @@ public class GhelpAdminCommand implements CraftCommand {
 
                     if (!gHelpData.isPlayerOnline()) {
                         ChatInfo.error(player, "Hráč §e" + gHelpData.getPlayerUsername() + "{c}, který napsal zprávu s UUID §e" + messageUUID + "{c} již není online - nelze mu odpovědět.");
-                        // TODO: tlačítko/zpráva pro smazání zprávy
+                        sendDeleteGHelpQuestion(player, gHelpData);
                         return;
                     }
 
@@ -148,7 +122,7 @@ public class GhelpAdminCommand implements CraftCommand {
 
                     Player gHelpPlayer = gHelpData.getPlayer();
                     sendRespondToPlayer(gHelpPlayer, gHelpData, respondMessage);
-                    // TODO: tlačítko/zpráva pro smazání zprávy
+                    sendDeleteGHelpQuestion(player, gHelpData);
                     return;
                 }
             }
@@ -161,5 +135,17 @@ public class GhelpAdminCommand implements CraftCommand {
         ChatInfo.info(player, "Tvá zpráva: §e" + gHelpData.getMessage());
         ChatInfo.info(player, "Odpověď A-Team člena: §e" + message);
         player.sendMessage(Component.text(""));
+    }
+
+    private void sendDeleteGHelpQuestion(Player player, GHelpData gHelpData) {
+        player.sendMessage(Component.text("§r"));
+
+        Component deleteGHelpMessage = Component.text(ChatInfo.infoMessage("Chcete smazat tento GHelp?"))
+                                                .append(Component.text(" §c[SMAZAT]")
+                                                                 .hoverEvent(HoverEvent.showText(Component.text("§cTato akce je nevratná.")))
+                                                                 .clickEvent(ClickEvent.runCommand("//ghelp delete " + gHelpData.getMessageUUID())));
+        player.sendMessage(deleteGHelpMessage);
+
+        player.sendMessage(Component.text("§r"));
     }
 }

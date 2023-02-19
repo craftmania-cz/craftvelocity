@@ -5,6 +5,7 @@ import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.objects.GHelpData;
 import cz.craftmania.craftvelocity.utils.Utils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 
 import java.util.*;
 
@@ -38,5 +39,15 @@ public class GHelpManager {
         }
 
         return System.currentTimeMillis() - time > Main.getInstance().getConfig().getGHelp().getCooldownMillis();
+    }
+
+    public void notifyAdminTeam(GHelpData gHelpData) {
+        Component message = Component.text("§6§lGHELP §7| §r").append(gHelpData.generateChatMessage());
+
+        for (Player player : Main.getInstance().getServer().getAllPlayers()) {
+            if (player.hasPermission("craftvelocity.at-ghelp")) {
+                player.sendMessage(message);
+            }
+        }
     }
 }

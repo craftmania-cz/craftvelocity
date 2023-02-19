@@ -43,8 +43,7 @@ public class GHelpCommand implements CraftCommand {
 
         GHelpData ghelpData = Main.getInstance().getGhelpManager().addMessage(player, message);
 
+        Main.getInstance().getGhelpManager().notifyAdminTeam(ghelpData);
         ChatInfo.info(player, "Tvá zpráva byla odeslána A-Teamu pod ID §e" + ghelpData.getMessageUUID() + "{c}! Vyčkej na jejich odpověď.");
-        // TODO: Actually odeslat zprávu
-        // TODO: Warn pokud nikdo z AT nebude online?
     }
 }

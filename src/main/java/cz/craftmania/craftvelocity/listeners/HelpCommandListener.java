@@ -21,7 +21,7 @@ public class HelpCommandListener {
         }
 
         //TODO: Ccominuty profile nastavení.
-        if (player.hasPermission("craftbungee.completions.blacklist")) {
+        if (player.hasPermission("craftvelocity.completions.blacklist")) {
             event.getRootNode().getChildren().clear();
             return;
         }
@@ -41,7 +41,7 @@ public class HelpCommandListener {
 
         config.getHelpCommands().getGroups().forEach((groupName, groupData) -> {
             if (player.hasPermission("craftvelocity.completions.group." + groupName)) {
-                Logger.debug("Processing group '" + groupName + "' {" + groupData + "} for " + player.getUsername());
+                Logger.debug("Processing completions group '" + groupName + "' {" + groupData + "} for " + player.getUsername());
 
                 // Pokud je prikaz na seznamu, bude povolen, jinak blokovan
                 if (!groupData.has(label)) {
