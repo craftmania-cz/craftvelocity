@@ -2,6 +2,7 @@ package cz.craftmania.craftvelocity.tasks;
 
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.listeners.JoinRateLimitListener;
+import cz.craftmania.craftvelocity.utils.Logger;
 
 public class JoinRateLimitResetterTask implements CraftTaskTimer {
 
@@ -32,6 +33,7 @@ public class JoinRateLimitResetterTask implements CraftTaskTimer {
 
     @Override
     public void run() {
+        Logger.info("@@@@@@@@ Running resseter");
         JoinRateLimitListener.setCurrentConnectionCount(0);
     }
 }

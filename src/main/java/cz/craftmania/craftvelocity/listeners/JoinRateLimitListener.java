@@ -4,6 +4,7 @@ import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.utils.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;

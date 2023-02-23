@@ -35,7 +35,7 @@ public class ConnectionWhitelistUpdateTask implements CraftTaskTimer {
         SQLManager sqlManager = Main.getInstance().getSqlManager();
 
         sqlManager.fetchWhitelistedIPs().whenComplete(((fetchedWhitelistedIPs, throwable) -> {
-            if (throwable != null) {
+            if (throwable == null) {
                 var whitelistedIPs = VPNListener.getWhitelistedIPs();
 
                 synchronized (whitelistedIPs) {
@@ -48,7 +48,7 @@ public class ConnectionWhitelistUpdateTask implements CraftTaskTimer {
         }));
 
         sqlManager.fetchWhitelistedNames().whenComplete(((fetchedWhitelistedNames, throwable) -> {
-            if (throwable != null) {
+            if (throwable == null) {
                 var whitelistedNames = VPNListener.getWhitelistedNames();
 
                 synchronized (whitelistedNames) {
@@ -61,7 +61,7 @@ public class ConnectionWhitelistUpdateTask implements CraftTaskTimer {
         }));
 
         sqlManager.fetchBlacklistedASNs().whenComplete(((fetchedBlacklistedASNs, throwable) -> {
-            if (throwable != null) {
+            if (throwable == null) {
                 var blacklistedASNs = VPNListener.getBlacklistedASNs();
 
                 synchronized (blacklistedASNs) {
@@ -74,7 +74,7 @@ public class ConnectionWhitelistUpdateTask implements CraftTaskTimer {
         }));
 
         sqlManager.fetchAllowedBlacklistedNicks().whenComplete((fetchedWhitelistedNicks, throwable) -> {
-            if (throwable != null) {
+            if (throwable == null) {
                 var whitelistedNicks = BlacklistedNamesListener.getWhitelistedNicks();
 
                 synchronized (whitelistedNicks) {
@@ -87,7 +87,7 @@ public class ConnectionWhitelistUpdateTask implements CraftTaskTimer {
         });
 
         sqlManager.fetchBlacklistedWords().whenComplete((fetchedBlacklistedWords, throwable) -> {
-            if (throwable != null) {
+            if (throwable == null) {
                 var blacklistedWords = BlacklistedNamesListener.getBlacklistedWords();
 
                 synchronized (blacklistedWords) {

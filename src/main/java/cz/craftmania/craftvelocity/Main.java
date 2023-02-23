@@ -142,6 +142,7 @@ public class Main {
         eventManager.register(this, new VoteListener());
         eventManager.register(this, new VPNListener());
         eventManager.register(this, new BlacklistedNamesListener());
+        eventManager.register(this, new JoinRateLimitListener());
     }
 
     private void loadCommands() {

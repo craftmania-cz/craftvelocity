@@ -90,7 +90,7 @@ amount = 1
 # Default skupina platí pro všechny, pokud je blacklist na true, tak glist nepůjde nikomu jako nápověda,
 # pokud je na false, tak půjde nápověda jenom třeba na /glist.
 [help-commands]
-    [defaults]
+    [help-commands.defaults]
         completions = [
             "survival",
             "skyblock",
@@ -112,8 +112,8 @@ amount = 1
             "cmsg"
         ]
     # Rozrazeni podle skupin, co by měli mít za nápovědy (blacklist: false), jinak jim nepujdou jenom ty nize vypsane.
-    [groups]
-        [staff] # craftvelocity.completions.group.staff
+    [help-commands.groups]
+        [help-commands.groups.staff] # craftvelocity.completions.group.staff
             completions = [
                 "survival",
                 "skyblock",

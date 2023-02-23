@@ -246,12 +246,13 @@ public class Config {
             defaultBlacklist = tomlFile.getBoolean("help-commands.defaults.blacklist", false);
             defaults.addAll(tomlFile.getList("help-commands.defaults.completions", new LinkedList<>()));
 
-            Toml tomlGroups = tomlFile.getTable("groups");
+            Toml tomlGroups = tomlFile.getTable("help-commands.groups");
 
-            tomlGroups.toMap().forEach((key, value) -> {
-                String groupName = key;
-                boolean isWhitelist = !tomlFile.getBoolean(groupName + ".blacklist", defaultBlacklist);
-                List<String> completions = tomlGroups.getList(groupName + ".completions", new LinkedList<>());
+            tomlGroups.toMap().forEach((groupName, value) -> {
+                String tableName = "help-commands.groups." + groupName;
+
+                boolean isWhitelist = !tomlFile.getBoolean(tableName + ".blacklist", defaultBlacklist);
+                List<String> completions = tomlFile.getList(tableName + ".completions", new LinkedList<>());
 
                 groups.put(groupName, new GroupData(completions, isWhitelist));
             });

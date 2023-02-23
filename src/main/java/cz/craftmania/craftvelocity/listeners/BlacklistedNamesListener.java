@@ -38,7 +38,7 @@ public class BlacklistedNamesListener {
             synchronized (whitelistedNicks) {
                 boolean matchesAny = whitelistedNicks.stream().anyMatch(nick -> nick.equalsIgnoreCase(username));
 
-                if (matchesAny) {
+                if (!matchesAny) {
                     event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance().getConfig().getNickBlacklist().getMessages().getBlacklistedWords())));
                     Logger.nickBlacklist("Hráčův nick " + username + " obsahuje zablokované slovo " + matchedWord + " - jeho připojení bylo zablokováno.");
                 } else {
