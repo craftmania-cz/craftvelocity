@@ -33,7 +33,6 @@ public class JoinRateLimitResetterTask implements CraftTaskTimer {
 
     @Override
     public void run() {
-        Logger.info("@@@@@@@@ Running resseter");
         JoinRateLimitListener.setCurrentConnectionCount(0);
     }
 }
