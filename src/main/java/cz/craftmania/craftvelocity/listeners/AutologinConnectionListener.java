@@ -13,6 +13,7 @@ import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
+import dev.mayuna.pumpk1n.objects.DataHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -72,10 +73,14 @@ public class AutologinConnectionListener {
                 return;
             }
 
-            PlayerIgnoredAutologinMessageData data = Main.getInstance().getPumpk1n().getDataHolder(player.getUniqueId()).getDataElement(PlayerIgnoredAutologinMessageData.class);
+            DataHolder playerDataHolder = Main.getInstance().getPumpk1n().getDataHolder(player.getUniqueId());
 
-            if (data != null) {
-                return;
+            if (playerDataHolder != null) {
+                PlayerIgnoredAutologinMessageData data = playerDataHolder.getDataElement(PlayerIgnoredAutologinMessageData.class);
+
+                if (data != null) {
+                    return;
+                }
             }
 
             MineToolsAPI.getInstance().getMineToolsPlayer(player.getUsername()).execute().whenCompleteAsync(((mineToolsPlayer, throwableMineTools) -> {
