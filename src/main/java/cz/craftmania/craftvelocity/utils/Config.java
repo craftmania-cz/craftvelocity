@@ -79,6 +79,8 @@ public class Config {
 
         autologin.servers.auth = tomlFile.getString("autologin.servers.auth", "whub");
         autologin.servers.lobbies = tomlFile.getList("autologin.servers.lobbies", new LinkedList<>());
+        autologin.database.proxyDatabaseName = tomlFile.getString("autologin.database.proxyDatabase", "bungeecord.");
+        autologin.database.minigamesDatabaseName = tomlFile.getString("autologin.database.minigamesDatabase", "minigames.");
 
         sql.hostname = tomlFile.getString("sql.hostname", "hostname");
         sql.database = tomlFile.getString("sql.database", "database");
@@ -120,26 +122,22 @@ public class Config {
     }
 
     public static class Plugin {
-
         private @Getter boolean debug = false;
-
     }
 
     public static class Autologin {
-
         private final @Getter Cache cache = new Cache();
         private final @Getter Messages messages = new Messages();
         private final @Getter Servers servers = new Servers();
+        private final @Getter Database database = new Database();
 
         public static class Cache {
-
             private @Getter long invalidateMineToolsCacheAfter;
             private @Getter long invalidateAutologinCacheAfter;
             private @Getter long invalidateDisabledAutologinCacheAfter;
         }
 
         public static class Messages {
-
             private @Getter String authServerNotFound;
             private @Getter String databaseError;
             private @Getter String runtimeError;
@@ -150,23 +148,24 @@ public class Config {
         }
 
         public static class Servers {
-
             private @Getter String auth;
             private @Getter List<String> lobbies;
+        }
+
+        public static class Database {
+            private @Getter String proxyDatabaseName;
+            private @Getter String minigamesDatabaseName;
         }
     }
 
     public static class SQL {
-
         private final @Getter Settings settings = new Settings();
-
         private @Getter String hostname;
         private @Getter String database;
         private @Getter String username;
         private @Getter String password;
 
         public static class Settings {
-
             private @Getter long minimumConnections;
             private @Getter long maximumConnections;
             private @Getter long timeout;
@@ -174,12 +173,10 @@ public class Config {
     }
 
     public static class ProxyCheck {
-
         private final @Getter Messages messages = new Messages();
         private @Getter String apiKey;
 
         public static class Messages{
-
             private @Getter String vpn;
             private @Getter String foreignIP;
             private @Getter String blockedASN;
@@ -187,35 +184,29 @@ public class Config {
     }
 
     public static class ConnectionWhitelist {
-
         private final @Getter Updater updater = new Updater();
 
         public static class Updater {
-
             private @Getter long delayMillis;
             private @Getter long intervalMillis;
         }
     }
 
     public static class NickBlacklist {
-
         private final @Getter Messages messages = new Messages();
 
         public static class Messages {
-
             private @Getter String blacklistedWords;
         }
     }
 
     public static class JoinRateLimit {
-
         private final @Getter Messages messages = new Messages();
         private @Getter long joinLimit;
         private @Getter long delayMillis;
         private @Getter long intervalMillis;
 
         public static class Messages {
-
             private @Getter String limitReached;
         }
     }

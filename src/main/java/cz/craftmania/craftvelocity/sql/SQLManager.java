@@ -1,6 +1,7 @@
 package cz.craftmania.craftvelocity.sql;
 
 import com.velocitypowered.api.proxy.Player;
+import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.objects.connectionwhitelist.BlacklistedASN;
 import cz.craftmania.craftvelocity.objects.connectionwhitelist.WhitelistedIP;
@@ -23,12 +24,16 @@ import java.util.regex.Pattern;
 
 public class SQLManager {
 
-    public static final String DATABASE = "minigames.";
+    private String PROXY_DATABASE;
+    private String MINIGAMES_DATABASE;
     
     private final @Getter ConnectionPoolManager pool;
 
     public SQLManager() {
         pool = new ConnectionPoolManager();
+        this.PROXY_DATABASE = Main.getInstance().getConfig().getAutologin().getDatabase().getProxyDatabaseName();
+        this.MINIGAMES_DATABASE = Main.getInstance().getConfig().getAutologin().getDatabase().getMinigamesDatabaseName();
+        Logger.info("Nastavená proxy databáze: " + this.PROXY_DATABASE + ", minigames databáze: " + this.MINIGAMES_DATABASE);
     }
 
     public void shutdown() {
@@ -51,7 +56,7 @@ public class SQLManager {
                         last_online datetime null,
                         constraint autologin_players_pk primary key (id)
                     );
-                    """.replace("$DATABASE$", DATABASE);
+                    """.replace("$DATABASE$", PROXY_DATABASE);
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.executeUpdate();
@@ -76,7 +81,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT nick, last_online FROM $DATABASE$autologin_players WHERE uuid = ?
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, uuid.toString());
@@ -110,7 +115,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$autologin_players WHERE LOWER(?) LIKE LOWER(nick)
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -179,7 +184,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         INSERT INTO $DATABASE$autologin_players (uuid, nick, last_online) VALUES (?, ?, ?)
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, autologinPlayer.getUuid().toString());
@@ -208,7 +213,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         UPDATE $DATABASE$autologin_players SET nick = ?, last_online = ? WHERE uuid = ?
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, autologinPlayer.getNick());
@@ -237,7 +242,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         DELETE FROM $DATABASE$autologin_players WHERE nick = ?
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -264,7 +269,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         DELETE FROM $DATABASE$autologin_players WHERE uuid = ?
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, uuid.toString());
@@ -292,7 +297,7 @@ public class SQLManager {
         try (Connection conn = pool.getConnection()) {
             String sql = """
                     SELECT last_vote FROM $DATABASE$player_profile WHERE nick = ?;
-                    """.replace("$DATABASE$", DATABASE);
+                    """.replace("$DATABASE$", MINIGAMES_DATABASE);
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, p);
@@ -321,7 +326,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         UPDATE $DATABASE$player_profile SET total_votes = total_votes + 1, week_votes = week_votes + 1, month_votes = month_votes + 1, vote_pass = vote_pass + 1, last_vote = ? WHERE nick = ?;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", MINIGAMES_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setLong(1, System.currentTimeMillis());
@@ -348,7 +353,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens = vote_tokens + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens = vote_tokens + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -375,7 +380,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_2 = vote_tokens_2 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_2 = vote_tokens_2 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -400,7 +405,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_3 = vote_tokens_3 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_3 = vote_tokens_3 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -425,7 +430,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET craft_coins = craft_coins + " + coins + " WHERE nick = ?;".replace("$DATABASE$", DATABASE);
+                String sql = "UPDATE $DATABASE$player_profile SET craft_coins = craft_coins + " + coins + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -450,7 +455,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET last_server = ?, last_online = ?, is_online = ?, mc_version = ? WHERE nick = ?;".replace("$DATABASE$", DATABASE);
+                String sql = "UPDATE $DATABASE$player_profile SET last_server = ?, last_online = ?, is_online = ?, mc_version = ? WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, Utils.getPlayerServerName(player));
@@ -485,7 +490,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$name_whitelist;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     try (ResultSet rs = ps.executeQuery()) {
@@ -519,7 +524,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$ip_whitelist;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     try (ResultSet rs = ps.executeQuery()) {
@@ -553,7 +558,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$blacklisted_asns;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     try (ResultSet rs = ps.executeQuery()) {
@@ -586,7 +591,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$allowed_blacklisted_names;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     try (ResultSet rs = ps.executeQuery()) {
@@ -619,7 +624,7 @@ public class SQLManager {
             try (Connection conn = pool.getConnection()) {
                 String sql = """
                         SELECT * FROM $DATABASE$blacklisted_name_words;
-                        """.replace("$DATABASE$", DATABASE);
+                        """.replace("$DATABASE$", PROXY_DATABASE);
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     try (ResultSet rs = ps.executeQuery()) {
@@ -657,7 +662,7 @@ public class SQLManager {
         try (Connection conn = pool.getConnection()) {
             String sql = """
                     UPDATE $DATABASE$player_profile SET played_time = played_time + 1, last_server = ? WHERE nick = ?;
-                    """.replace("$DATABASE$", DATABASE);
+                    """.replace("$DATABASE$", MINIGAMES_DATABASE);
 
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, playerServer);
