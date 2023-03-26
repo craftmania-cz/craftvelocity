@@ -5,6 +5,4 @@ import lombok.Getter;
 
 public class PlayerIgnoredAutologinMessageData extends ParentedDataElement {
 
-    private final @Getter boolean messageIgnored = true;
-
 }
