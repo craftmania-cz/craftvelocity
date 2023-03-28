@@ -36,6 +36,10 @@ autologinDisabledForced = "§e[AUTOLOGIN] §7Byl ti §cvypnut§7 autologin. §eP
 auth = "whub"
 lobbies = ["lobby"]
 
+[autologin.database]
+proxyDatabase = "bungeecord."
+minigamesDatabase = "minigames."
+
 # Misc
 
 [proxycheck]

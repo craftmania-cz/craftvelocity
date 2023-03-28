@@ -13,6 +13,7 @@ import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
+import dev.mayuna.pumpk1n.objects.DataHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -33,20 +34,27 @@ public class AutologinConnectionListener {
     public void onPlayerChooseInitialServer(PlayerChooseInitialServerEvent event) {
         Player player = event.getPlayer();
 
+        // Warez hub
         if (!event.getPlayer().isOnlineMode()) {
             String authServer = Main.getInstance().getConfig().getAutologin().getServers().getAuth();
-
             Logger.info("[AUTOLOGIN] Hráč " + player.getUsername() + " (" + player.getUniqueId() + ") je offline hráč. Posílám ho na auth server '" + authServer + "'!");
-
             RegisteredServer server = Main.getInstance().getServer().getServer(authServer).orElse(null);
-
             if (server == null) {
                 Logger.warning("[AUTOLOGIN] Auth server " + authServer + " není registrovaný ve velocity! Hráče " + player.getUsername() + " kickuji...");
                 player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAuthServerNotFound()));
                 return;
             }
-
             event.setInitialServer(server);
+        } else {
+            // Hrač má originalku, musí být přesunut na lobby
+            String originalLoginLobbyName = Main.getInstance().getConfig().getAutologin().getServers().getLobbies().get(0); // Random?
+            RegisteredServer originalLoginServer = Main.getInstance().getServer().getServer(originalLoginLobbyName).orElse(null);
+            if (originalLoginServer == null) {
+                Logger.warning("[AUTOLOGIN] Auth server " + originalLoginServer + " není registrovaný ve velocity! Hráče " + player.getUsername() + " kickuji...");
+                player.disconnect(Component.text(Main.getInstance().getConfig().getAutologin().getMessages().getAuthServerNotFound()));
+                return;
+            }
+            event.setInitialServer(originalLoginServer);
         }
     }
 
@@ -65,10 +73,14 @@ public class AutologinConnectionListener {
                 return;
             }
 
-            PlayerIgnoredAutologinMessageData data = Main.getInstance().getPumpk1n().getDataHolder(player.getUniqueId()).getDataElement(PlayerIgnoredAutologinMessageData.class);
+            DataHolder playerDataHolder = Main.getInstance().getPumpk1n().getDataHolder(player.getUniqueId());
 
-            if (data != null) {
-                return;
+            if (playerDataHolder != null) {
+                PlayerIgnoredAutologinMessageData data = playerDataHolder.getDataElement(PlayerIgnoredAutologinMessageData.class);
+
+                if (data != null) {
+                    return;
+                }
             }
 
             MineToolsAPI.getInstance().getMineToolsPlayer(player.getUsername()).execute().whenCompleteAsync(((mineToolsPlayer, throwableMineTools) -> {
