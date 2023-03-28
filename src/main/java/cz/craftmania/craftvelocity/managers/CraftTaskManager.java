@@ -12,6 +12,10 @@ public class CraftTaskManager {
 
     private final @Getter Timer timer = new Timer();
 
+    /**
+     * Registers {@link CraftTask}. All the specified info is then processed (info such as if it's fixed timer, delay, interval, etc.)
+     * @param craftTask CraftTask
+     */
     public void register(CraftTask craftTask) {
         if (craftTask instanceof CraftTaskTimer craftTaskTimer) {
             if (craftTaskTimer.isFixed()) {
@@ -41,6 +45,10 @@ public class CraftTaskManager {
         }, craftTask.getDelay());
     }
 
+    /**
+     * Runs {@link CraftTask}
+     * @param craftTask CraftTask
+     */
     private void runTask(CraftTask craftTask) {
         if (craftTask.logStartAndFinish()) {
             Logger.debug("[TASK] Byl spuštěn task s názvem " + craftTask.getName() + " (timer task: " + (craftTask instanceof CraftTaskTimer) + ")");

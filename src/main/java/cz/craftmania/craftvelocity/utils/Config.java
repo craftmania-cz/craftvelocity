@@ -34,6 +34,9 @@ public class Config {
         dataDirectory = path;
     }
 
+    /**
+     * Loads config file
+     */
     public void loadFile() {
         File dataDirectory = this.dataDirectory.toFile();
         if (!dataDirectory.exists()) {
@@ -62,6 +65,9 @@ public class Config {
         Main.getInstance().getLogger().info("Config was read.");
     }
 
+    /**
+     * Loads config values from loaded config. {@link #loadFile()} must be called before this method invocation.
+     */
     public void loadConfig() {
         plugin.debug = tomlFile.getBoolean("plugin.debug", false);
 

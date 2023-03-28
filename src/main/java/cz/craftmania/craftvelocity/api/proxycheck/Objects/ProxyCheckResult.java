@@ -3,6 +3,9 @@ package cz.craftmania.craftvelocity.api.proxycheck.Objects;
 import cz.craftmania.craftvelocity.api.proxycheck.ProxyCheckResponse;
 import lombok.Getter;
 
+/**
+ * Holds information about IP Address and query time
+ */
 public class ProxyCheckResult extends ProxyCheckResponse {
 
     private @Getter IPAddressInfo ipAddressInfo;

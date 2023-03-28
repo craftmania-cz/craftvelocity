@@ -3,7 +3,6 @@ package cz.craftmania.craftvelocity.managers;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import cz.craftmania.craftvelocity.Main;
-import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
 import cz.craftmania.craftvelocity.cache.AutologinCache;
 import cz.craftmania.craftvelocity.objects.AutologinPlayer;
@@ -22,6 +21,12 @@ public class AutologinManager {
         cache.init();
     }
 
+    /**
+     * Processes {@link PreLoginEvent}
+     *
+     * @param event        PreLoginEvent
+     * @param continuation Event's continuation (usually from event listener)
+     */
     public void processPreLoginEvent(PreLoginEvent event, Continuation continuation) {
         String username = event.getUsername();
 
@@ -56,6 +61,13 @@ public class AutologinManager {
         }
     }
 
+    /**
+     * Fetches {@link AutologinPlayer} by player's nick
+     *
+     * @param nick Player's nick
+     *
+     * @return {@link CompletableFuture} with {@link AutologinPlayer}
+     */
     public CompletableFuture<AutologinPlayer> fetchAutologinPlayer(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
@@ -73,14 +85,14 @@ public class AutologinManager {
 
     /**
      * Tries to enable autologin for nickname.<br>
-     *
-     * The return will be null if:<br>
-     * - Player is non-premium<br>
-     * - Player in MineToolsCache has mismatched nicks with the passed nick into this method<br>
+     * <p>
+     * The return will be null if:<br> - Player is non-premium<br> - Player in MineToolsCache has mismatched nicks with the passed nick into this
+     * method<br>
      * <br>
      * Throwable indicates that there was an exception when processing the MineTools API or anything else.
      *
      * @param nick Nick of the player
+     *
      * @return CompletableFuture<AutologinPlayer>
      */
     public CompletableFuture<AutologinPlayer> enableAutologin(String nick) {
@@ -122,6 +134,14 @@ public class AutologinManager {
         return completableFuture;
     }
 
+    /**
+     * Enables Autologin for player with nick and uuid
+     *
+     * @param nick Player's nick
+     * @param uuid Player's UUID
+     *
+     * @return {@link CompletableFuture} with just created {@link AutologinPlayer}
+     */
     public CompletableFuture<AutologinPlayer> enableAutologin(String nick, UUID uuid) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
@@ -144,6 +164,13 @@ public class AutologinManager {
         return completableFuture;
     }
 
+    /**
+     * Disables Autologin for player by player's nick
+     *
+     * @param nick Player's nick
+     *
+     * @return {@link CompletableFuture} with nothing in it, just to determine the completion of {@link CompletableFuture}. Void, just like in our hearts.
+     */
     public CompletableFuture<Void> disableAutologin(String nick) {
         CompletableFuture<Void> completableFuture = new CompletableFuture<>();
 

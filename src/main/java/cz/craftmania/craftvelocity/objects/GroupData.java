@@ -3,6 +3,9 @@ package cz.craftmania.craftvelocity.objects;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Holds information about config's tab completion group
+ */
 public class GroupData {
 
     private boolean isWhitelist;
@@ -13,10 +16,19 @@ public class GroupData {
         this.isWhitelist = isWhitelist;
     }
 
+    /**
+     * Checks if the group has command in command list
+     * @param command Command
+     * @return True if command exists in command list, otherwise false
+     */
     public boolean has(String command) {
         return this.commands.contains(command);
     }
 
+    /**
+     * Checks if group is set to whitelist commands
+     * @return True if is set to whitelist commands
+     */
     boolean isWhitelist() {
         return this.isWhitelist;
     }

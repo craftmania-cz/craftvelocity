@@ -99,7 +99,7 @@ public class AutologinAdminCommand implements CraftCommand {
                 case "clear-cache" -> {
                     ChatInfo.info(source, "Mažu Autologin Cache...");
 
-                    cache.clear();
+                    cache.invalidateAll();
 
                     ChatInfo.success(source, "Vymazal jsi Autologin Cache.");
                     return;

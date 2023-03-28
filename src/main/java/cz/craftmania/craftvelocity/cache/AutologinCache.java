@@ -14,11 +14,15 @@ import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.Logger;
 import cz.craftmania.craftvelocity.utils.Utils;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Holds Autologin Caches: {@link MineToolsCacheObject}, {@link AutologinPlayer} cache, and disabled autologin player cache
+ */
 public class AutologinCache {
 
     // Nick : AutologinCacheObject
@@ -26,6 +30,9 @@ public class AutologinCache {
     private @Getter LoadingCache<String, AutologinPlayer> resolvedAutologinPlayerCache;
     private @Getter LoadingCache<String, Boolean> disabledAutologinPlayerCache;
 
+    /**
+     * Initializes Autologin Cache. Must be called at the start of plugin
+     */
     public void init() {
         Logger.info("Inicializuji AutologinCache...");
 
@@ -70,26 +77,31 @@ public class AutologinCache {
         Logger.debug("[AUTOLOGIN-CACHE] Objekty v resolvedAutologinPlayerCache budou invalidovány po " + autologinExpireAfter + " milisekundách (" + TimeUnit.MILLISECONDS.toMinutes(autologinExpireAfter) + " minut)");
 
         resolvedAutologinPlayerCache = CacheBuilder.newBuilder()
-                                                    .expireAfterWrite(autologinExpireAfter, TimeUnit.MILLISECONDS)
-                                                    .expireAfterAccess(autologinExpireAfter, TimeUnit.MILLISECONDS)
-                                                    .removalListener((RemovalListener<String, AutologinPlayer>) notification -> {
-                                                        Logger.debug("[AUTOLOGIN-CACHE] Hráč " + notification.getValue().getNick() + "(" + notification.getValue().getUuid() + ") byl odstraněn z Autologin cache z důvodu: " + notification.getCause());
-                                                    })
-                                                    .build(new CacheLoader<>() {
-                                                        @Override
-                                                        public AutologinPlayer load(String nick) throws Exception {
-                                                            AutologinPlayer autologinPlayer = Main.getInstance().getSqlManager().fetchAutologinPlayer(nick).join();
+                                                   .expireAfterWrite(autologinExpireAfter, TimeUnit.MILLISECONDS)
+                                                   .expireAfterAccess(autologinExpireAfter, TimeUnit.MILLISECONDS)
+                                                   .removalListener((RemovalListener<String, AutologinPlayer>) notification -> {
+                                                       Logger.debug("[AUTOLOGIN-CACHE] Hráč " + notification.getValue()
+                                                                                                            .getNick() + "(" + notification.getValue()
+                                                                                                                                           .getUuid() + ") byl odstraněn z Autologin cache z důvodu: " + notification.getCause());
+                                                   })
+                                                   .build(new CacheLoader<>() {
+                                                       @Override
+                                                       public AutologinPlayer load(String nick) throws Exception {
+                                                           AutologinPlayer autologinPlayer = Main.getInstance()
+                                                                                                 .getSqlManager()
+                                                                                                 .fetchAutologinPlayer(nick)
+                                                                                                 .join();
 
-                                                            if (autologinPlayer == null) {
-                                                                disabledAutologinPlayerCache.get(nick); // Přidá jakokdyby hráče na disabled autologin player cache
-                                                                throw new AutologinNotEnabledException(nick);
-                                                            }
+                                                           if (autologinPlayer == null) {
+                                                               disabledAutologinPlayerCache.get(nick); // Přidá jakokdyby hráče na disabled autologin player cache
+                                                               throw new AutologinNotEnabledException(nick);
+                                                           }
 
-                                                            invalidateDisabledAutologinCacheForNick(nick);
+                                                           invalidateDisabledAutologinCacheForNick(nick);
 
-                                                            return autologinPlayer;
-                                                        }
-                                                    });
+                                                           return autologinPlayer;
+                                                       }
+                                                   });
     }
 
     private void initDisabledAutologinCache() {
@@ -111,6 +123,14 @@ public class AutologinCache {
                                                    });
     }
 
+    /**
+     * Fetch or loads {@link MineToolsPlayer} from player's nick.<br>Request to MineTools is only made when there no MineToolsPlayer with specified
+     * nick is cached.
+     *
+     * @param nick Player's nick
+     *
+     * @return {@link CompletableFuture} with {@link MineToolsCacheObject}
+     */
     public CompletableFuture<MineToolsCacheObject> fetchOrLoadMineToolsPlayerFromNick(String nick) {
         CompletableFuture<MineToolsCacheObject> completableFuture = new CompletableFuture<>();
 
@@ -125,6 +145,14 @@ public class AutologinCache {
         return completableFuture;
     }
 
+    /**
+     * Fetch or loads {@link AutologinPlayer} from player's nick.<br>Request to SQL is only made when there no AutologinPlayer with specified nick is
+     * cached.
+     *
+     * @param nick Player's nick
+     *
+     * @return {@link CompletableFuture} with {@link MineToolsCacheObject}
+     */
     public CompletableFuture<AutologinPlayer> fetchOrLoadAutologinPlayerFromNick(String nick) {
         CompletableFuture<AutologinPlayer> completableFuture = new CompletableFuture<>();
 
@@ -150,31 +178,64 @@ public class AutologinCache {
         return completableFuture;
     }
 
+    /**
+     * Invalids disabled Autologin cache for player's nick
+     *
+     * @param nick Player's nick
+     */
     public void invalidateDisabledAutologinCacheForNick(String nick) {
         disabledAutologinPlayerCache.invalidate(nick);
     }
 
+    /**
+     * Invalids Autologin cache for player's nick
+     *
+     * @param nick Player's nick
+     */
     public void invalidateAutologinCacheForNick(String nick) {
         resolvedAutologinPlayerCache.invalidate(nick);
     }
 
+    /**
+     * Invalids MineTools cache for player's nick
+     *
+     * @param nick Player's nick
+     */
     public void invalidateMineToolsCacheForNick(String nick) {
         resolvedMineToolsPlayersCache.invalidate(nick);
     }
 
+    /**
+     * Force adds {@link AutologinPlayer} to cache
+     *
+     * @param autologinPlayer {@link AutologinPlayer}
+     */
     public void forceAddToAutologinPlayerCache(AutologinPlayer autologinPlayer) {
         resolvedAutologinPlayerCache.put(autologinPlayer.getNick(), autologinPlayer);
     }
 
+    /**
+     * Force adds player's nick to cache
+     *
+     * @param nick player's nick
+     */
     public void forceAddToDisabledAutologinPlayerCache(String nick) {
         disabledAutologinPlayerCache.put(nick, true);
     }
 
-    public AutologinPlayer getIfPresentFromAutologinPlayerCache(String nick) {
+    /**
+     * Gets {@link AutologinPlayer} from cache by player's nick if present
+     * @param nick Player's nick
+     * @return Nullable {@link AutologinPlayer}
+     */
+    public @Nullable AutologinPlayer getIfPresentFromAutologinPlayerCache(String nick) {
         return resolvedAutologinPlayerCache.getIfPresent(nick);
     }
 
-    public void clear() {
+    /**
+     * Invalidates all caches
+     */
+    public void invalidateAll() {
         resolvedMineToolsPlayersCache.invalidateAll();
         resolvedAutologinPlayerCache.invalidateAll();
         disabledAutologinPlayerCache.invalidateAll();

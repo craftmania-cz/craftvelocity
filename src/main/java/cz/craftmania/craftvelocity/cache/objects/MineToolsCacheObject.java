@@ -4,6 +4,9 @@ import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
 import lombok.Getter;
 import lombok.NonNull;
 
+/**
+ * Holds MineToolsPlayer object
+ */
 public class MineToolsCacheObject {
 
     private final @Getter MineToolsPlayer mineToolsPlayer;
@@ -12,6 +15,9 @@ public class MineToolsCacheObject {
         this.mineToolsPlayer = mineToolsPlayer;
     }
 
+    /**
+     * See {@link MineToolsPlayer#isOriginalNick()}
+     */
     public boolean isOriginalNick() {
         return mineToolsPlayer.isOriginalNick();
     }

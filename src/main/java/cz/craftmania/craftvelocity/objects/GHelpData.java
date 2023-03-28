@@ -11,6 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Holds information about GHelp
+ */
 public class GHelpData {
 
     private final @Getter String playerUsername;
@@ -29,18 +32,34 @@ public class GHelpData {
         this.time = time;
     }
 
+    /**
+     * Returns Player object.
+     * @return Nullable Player object (not null if player is online)
+     */
     public Player getPlayer() {
         return Main.getInstance().getServer().getPlayer(playerUUID).orElse(null);
     }
 
+    /**
+     * Checks if player is online
+     * @return Returns true if player is online, otherwise false
+     */
     public boolean isPlayerOnline() {
         return getPlayer() != null;
     }
 
+    /**
+     * Formats GHelp's time into human-readable format
+     * @return String with time in human-readable format
+     */
     public String formatTime() {
         return new SimpleDateFormat("HH:mm dd.MM.").format(new Date(time));
     }
 
+    /**
+     * Creates GHelp message for admins to interact with
+     * @return Component
+     */
     public Component generateChatMessage() {
         Component buttonRespondComponent = Component.text("§b[ODP]§r ")
                                                     .hoverEvent(HoverEvent.showText(Component.text("§7Kliknutím doplníš příkaz k odpovědi.")))
