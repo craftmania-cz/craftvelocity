@@ -9,6 +9,13 @@ import java.io.IOException;
 
 public class PluginMessageUtils {
 
+    /**
+     * Sends plugin vote message with player's nick, coin value and votetokens value
+     * @param serverConnection Server connection
+     * @param nick Player's nick
+     * @param coins Coins
+     * @param voteTokens VoteTokens
+     */
     public static void sendVoteMessage(ServerConnection serverConnection, String nick, String coins, String voteTokens) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(stream);

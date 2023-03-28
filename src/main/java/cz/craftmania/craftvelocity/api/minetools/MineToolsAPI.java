@@ -9,6 +9,9 @@ import lombok.NonNull;
 
 import java.util.UUID;
 
+/**
+ * Wraps MineTools' API into a {@link SimpleAPI}
+ */
 public class MineToolsAPI extends SimpleAPI {
 
     private static MineToolsAPI instance;
@@ -21,6 +24,10 @@ public class MineToolsAPI extends SimpleAPI {
         return UUID.fromString(id.replaceFirst("(\\p{XDigit}{8})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}{4})(\\p{XDigit}+)", "$1-$2-$3-$4-$5"));
     }
 
+    /**
+     * Gets singleton's instance
+     * @return Non-null {@link MineToolsAPI}
+     */
     public static MineToolsAPI getInstance() {
         if (instance == null) {
             instance = new MineToolsAPI();
@@ -34,6 +41,11 @@ public class MineToolsAPI extends SimpleAPI {
         return "https://api.minetools.eu";
     }
 
+    /**
+     * Fetches {@link MineToolsPlayer} from MineTools' API
+     * @param nick Non-null player's nick
+     * @return {@link Action} with {@link MineToolsPlayer}
+     */
     public Action<MineToolsPlayer> getMineToolsPlayer(String nick) {
         return new Action<>(this, MineToolsPlayer.class, new APIRequest.Builder()
                 .setEndpoint("/uuid/{nick}")
@@ -42,6 +54,11 @@ public class MineToolsAPI extends SimpleAPI {
                 .build());
     }
 
+    /**
+     * Fetches {@link MineToolsPlayer} from MineTools' API
+     * @param uuid Non-null player's UUID
+     * @return {@link Action} with {@link MineToolsPlayer}
+     */
     public Action<MineToolsPlayer> getMineToolsPlayer(UUID uuid) {
         return new Action<>(this, MineToolsPlayer.class, new APIRequest.Builder()
                 .setEndpoint("/uuid/{uuid}")

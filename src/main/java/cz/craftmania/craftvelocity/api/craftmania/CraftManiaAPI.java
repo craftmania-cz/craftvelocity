@@ -7,10 +7,17 @@ import dev.mayuna.simpleapi.PathParameter;
 import dev.mayuna.simpleapi.SimpleAPI;
 import lombok.NonNull;
 
+/**
+ * Wraps CraftMania's API into a {@link SimpleAPI}
+ */
 public class CraftManiaAPI extends SimpleAPI {
 
     private static CraftManiaAPI instance;
 
+    /**
+     * Gets singleton's instance
+     * @return Non-null {@link CraftManiaAPI}
+     */
     public static CraftManiaAPI getInstance() {
         if (instance == null) {
             instance = new CraftManiaAPI();
@@ -24,7 +31,12 @@ public class CraftManiaAPI extends SimpleAPI {
         return "https.//api.craftmania.cz/";
     }
 
-    public Action<PlayerInfo> fetchPlayerInfo(String nick) {
+    /**
+     * Fetches {@link PlayerInfo} from CraftMania's API
+     * @param nick Non-null player's nick
+     * @return {@link Action} with {@link PlayerInfo}
+     */
+    public Action<PlayerInfo> fetchPlayerInfo(@NonNull String nick) {
         return new Action<>(this, PlayerInfo.class, new APIRequest.Builder()
                 .setEndpoint("/player/{nick}")
                 .setMethod("GET")

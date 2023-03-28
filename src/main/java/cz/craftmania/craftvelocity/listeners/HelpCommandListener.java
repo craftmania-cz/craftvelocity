@@ -29,6 +29,12 @@ public class HelpCommandListener {
         event.getRootNode().getChildren().removeIf(commandNode -> !checkCommand(player, commandNode));
     }
 
+    /**
+     * Checks if player can see the command in tab completion (checks by completions group in config)
+     * @param player Player
+     * @param commandNode Command node
+     * @return Indicates if player will be able to see the command in tab completions
+     */
     private boolean checkCommand(Player player, CommandNode<?> commandNode) {
         String label = commandNode.getName();
         AtomicBoolean isAllowed = new AtomicBoolean(false); // Default blokace všeho!

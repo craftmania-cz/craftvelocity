@@ -8,6 +8,9 @@ import dev.mayuna.simpleapi.SimpleAPI;
 import lombok.NonNull;
 import lombok.Setter;
 
+/**
+ * Wraps ProxyCheck's API into a {@link SimpleAPI}
+ */
 public class ProxyCheckAPI extends SimpleAPI {
 
     private static ProxyCheckAPI instance;
@@ -26,6 +29,11 @@ public class ProxyCheckAPI extends SimpleAPI {
         return "https://proxycheck.io";
     }
 
+    /**
+     * Fetches {@link ProxyCheckResult} from ProxyCheck's API
+     * @param ipAddress IP address
+     * @return {@link Action} with {@link ProxyCheckResult}
+     */
     public Action<ProxyCheckResult> fetchProxyCheck(String ipAddress) {
         return new Action<>(this, ProxyCheckResult.class, new APIRequest.Builder()
                 .setEndpoint("/v2/{ip}?key={apikey}&vpn=1&asn=1&node=1&time=1&inf=0&risk=1&port=1&seen=1&days=7&tag=Bungeecord")

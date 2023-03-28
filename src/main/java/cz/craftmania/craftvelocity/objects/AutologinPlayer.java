@@ -6,6 +6,9 @@ import lombok.Getter;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Holds information about Autologin Player such as player's UUID, nick and date of last appearance on the server
+ */
 public class AutologinPlayer {
 
     private final @Getter UUID uuid;
@@ -24,6 +27,10 @@ public class AutologinPlayer {
         this.lastOnline = lastOnline;
     }
 
+    /**
+     * Updates nick in current instance if the current nick does not equal to the supplied nick
+     * @param newNick Player's nick
+     */
     public void updateNick(String newNick) {
         if (nick.equals(newNick)) {
             return;
@@ -32,10 +39,16 @@ public class AutologinPlayer {
         nick = newNick;
     }
 
+    /**
+     * Updates last online time
+     */
     public void updateLastOnline() {
         lastOnline = new Date();
     }
 
+    /**
+     * Updates player on SQL database (inserts or updates)
+     */
     public void updateOnSQL() {
         Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(this);
     }

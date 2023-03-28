@@ -7,6 +7,9 @@ import cz.craftmania.craftvelocity.api.proxycheck.Objects.ProxyCheckResult;
 import java.lang.reflect.Type;
 import java.util.regex.Pattern;
 
+/**
+ * Adapter for deserializing ProxyCheck's result
+ */
 public class ProxyCheckResultTypeAdapter implements JsonDeserializer<ProxyCheckResult> {
 
     public static final Pattern IPV4_PATTERN = Pattern.compile("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$");

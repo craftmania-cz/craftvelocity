@@ -3,6 +3,9 @@ package cz.craftmania.craftvelocity.api.minetools.objects;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 
+/**
+ * Holds hit, cacheTime in millis, cacheTimeLeft in millis, cacheAt in millis as UTC time and cacheUntil in millis as UTC time
+ */
 public class MineToolsCache {
 
     private @Getter @SerializedName("HIT") boolean hit;
