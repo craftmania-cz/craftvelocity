@@ -1,19 +1,20 @@
 package cz.craftmania.craftvelocity.objects;
 
+import lombok.Getter;
+
 import java.util.List;
-import java.util.Set;
 
 /**
  * Holds information about config's tab completion group
  */
 public class GroupData {
 
-    private boolean isWhitelist;
+    private boolean whitelist;
     private List<String> commands;
 
-    public GroupData(List<String> commands, boolean isWhitelist) {
+    public GroupData(List<String> commands, boolean whitelist) {
         this.commands = commands;
-        this.isWhitelist = isWhitelist;
+        this.whitelist = whitelist;
     }
 
     /**
@@ -29,14 +30,14 @@ public class GroupData {
      * Checks if group is set to whitelist commands
      * @return True if is set to whitelist commands
      */
-    boolean isWhitelist() {
-        return this.isWhitelist;
+    public boolean isWhitelist() {
+        return this.whitelist;
     }
 
     @Override
     public String toString() {
         return "GroupData{" +
-                "isWhitelist=" + isWhitelist +
+                "isWhitelist=" + whitelist +
                 ", commands=" + commands +
                 '}';
     }

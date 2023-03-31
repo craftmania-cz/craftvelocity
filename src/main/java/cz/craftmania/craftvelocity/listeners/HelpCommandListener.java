@@ -49,11 +49,25 @@ public class HelpCommandListener {
             if (player.hasPermission("craftvelocity.completions.group." + groupName)) {
                 Logger.debug("Processing completions group '" + groupName + "' {" + groupData + "} for " + player.getUsername());
 
-                // Pokud je prikaz na seznamu, bude povolen, jinak blokovan
-                if (!groupData.has(label)) {
-                    isAllowed.set(false);
+                // Hráč má příkaz na seznamu
+                if (groupData.has(label)) {
+
+                    // Hráč má příkaz na seznamu a seznam je nastavený na blacklist
+                    if (!groupData.isWhitelist()) {
+                        // Zablokujeme tab complete
+                        isAllowed.set(false);
+                    } else {
+                        // Hráč má příkaz na seznamu a seznam je nastavený na whitelist
+                        isAllowed.set(true);
+                    }
                 } else {
-                    isAllowed.set(true);
+                    // Seznam je nastavený na whitelist - jen příkazy v seznamu jsou povolené
+                    if (groupData.isWhitelist()) {
+                        // Hráč nemá příkaz na seznamu ALE je nastavený na whitelist -> allowed
+                        isAllowed.set(true);
+                    } else {
+                        isAllowed.set(false);
+                    }
                 }
             }
         });
