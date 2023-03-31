@@ -16,6 +16,7 @@ import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
 import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
+import cz.craftmania.craftvelocity.commands.player.LobbyCommand;
 import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.managers.CraftTaskManager;
@@ -161,5 +162,8 @@ public class Main {
         // GHelp
         new GHelpCommand().registerCommand(commandManager);
         new GhelpAdminCommand().registerCommand(commandManager);
+
+        // Player
+        new LobbyCommand().registerCommand(commandManager);
     }
 }
