@@ -353,7 +353,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens = vote_tokens + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens = vote_tokens + $VOTE_TOKENS$ WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE).replace("$VOTE_TOKENS$", String.valueOf(voteTokens));
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -380,7 +380,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_2 = vote_tokens_2 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_2 = vote_tokens_2 + $VOTE_TOKENS$ WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE).replace("$VOTE_TOKENS$", String.valueOf(voteTokens));
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -405,7 +405,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_3 = vote_tokens_3 + " + voteTokens + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);;
+                String sql = "UPDATE $DATABASE$player_profile SET vote_tokens_3 = vote_tokens_3 + $VOTE_TOKENS$ WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE).replace("$VOTE_TOKENS$", String.valueOf(voteTokens));
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
@@ -430,7 +430,7 @@ public class SQLManager {
 
         Utils.runAsync(() -> {
             try (Connection conn = pool.getConnection()) {
-                String sql = "UPDATE $DATABASE$player_profile SET craft_coins = craft_coins + " + coins + " WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE);
+                String sql = "UPDATE $DATABASE$player_profile SET craft_coins = craft_coins + $COINS$ WHERE nick = ?;".replace("$DATABASE$", MINIGAMES_DATABASE).replace("$COINS$", String.valueOf(coins));
 
                 try (PreparedStatement ps = conn.prepareStatement(sql)) {
                     ps.setString(1, nick);
