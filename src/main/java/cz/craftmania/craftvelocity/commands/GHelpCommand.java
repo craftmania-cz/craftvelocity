@@ -29,6 +29,11 @@ public class GHelpCommand implements CraftCommand {
             return;
         }
 
+        if (player.getCurrentServer().get().getServerInfo().getName().equals(Main.getInstance().getConfig().getAutologin().getServers().getAuth())) {
+            ChatInfo.error(player, "Tento příkaz nelze použít na přihlašovacím lobby.");
+            return;
+        }
+
         if (arguments.length == 0) {
             ChatInfo.error(player, "Nenapsal jsi žádnou zprávu. Syntax: /ghelp <zpráva>");
             return;
