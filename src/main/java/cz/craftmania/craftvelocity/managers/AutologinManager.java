@@ -33,7 +33,6 @@ public class AutologinManager {
         try {
             Logger.info("[AUTOLOGIN] Zpracovávám hráče " + username);
 
-
             fetchAutologinPlayer(username).whenCompleteAsync((autologinPlayer, throwable) -> {
                 if (throwable != null) {
                     String errorMessage = Main.getInstance().getConfig().getAutologin().getMessages().getDatabaseError();

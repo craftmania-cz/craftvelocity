@@ -3,6 +3,7 @@ package cz.craftmania.craftvelocity.listeners;
 import com.velocitypowered.api.event.Continuation;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
@@ -11,6 +12,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.api.minetools.MineToolsAPI;
 import cz.craftmania.craftvelocity.data.PlayerIgnoredAutologinMessageData;
+import cz.craftmania.craftvelocity.managers.AutologinManager;
+import cz.craftmania.craftvelocity.objects.AutologinPlayer;
 import cz.craftmania.craftvelocity.utils.ChatInfo;
 import cz.craftmania.craftvelocity.utils.Logger;
 import dev.mayuna.pumpk1n.objects.DataHolder;
@@ -110,6 +113,23 @@ public class AutologinConnectionListener {
                     player.sendMessage(autologinIgnoreComponent);
                 }
             }));
+        }));
+    }
+
+    @Subscribe
+    public void onDisconnect(DisconnectEvent event) {
+        Player player = event.getPlayer();
+
+        Main.getInstance().getAutologinManager().fetchAutologinPlayer(player.getUsername()).whenCompleteAsync(((autologinPlayer, throwable) -> {
+            if (throwable != null) {
+                Logger.error("[AUTOLOGIN] Nebylo možné aktualizovat hodnotu lastOnline pro hráče " + player.getUsername() + " (" + player.getUniqueId() + ")!", throwable);
+                return;
+            }
+
+            Logger.info("[AUTOLOGIN] Aktualizuji lastOnline hodnotu pro hráče " + player.getUsername() + " (" + player.getUniqueId() + ")...");
+
+            autologinPlayer.updateLastOnline();
+            autologinPlayer.updateOnSQL();
         }));
     }
 }

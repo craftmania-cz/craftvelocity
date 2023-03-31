@@ -1,6 +1,7 @@
 package cz.craftmania.craftvelocity.objects;
 
 import cz.craftmania.craftvelocity.Main;
+import cz.craftmania.craftvelocity.utils.Logger;
 import lombok.Getter;
 
 import java.util.Date;
@@ -28,18 +29,6 @@ public class AutologinPlayer {
     }
 
     /**
-     * Updates nick in current instance if the current nick does not equal to the supplied nick
-     * @param newNick Player's nick
-     */
-    public void updateNick(String newNick) {
-        if (nick.equals(newNick)) {
-            return;
-        }
-
-        nick = newNick;
-    }
-
-    /**
      * Updates last online time
      */
     public void updateLastOnline() {
@@ -50,7 +39,11 @@ public class AutologinPlayer {
      * Updates player on SQL database (inserts or updates)
      */
     public void updateOnSQL() {
-        Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(this);
+        Main.getInstance().getSqlManager().insertOrUpdateAutologinPlayer(this).whenCompleteAsync(((unused, throwable) -> {
+            if (throwable != null) {
+                Logger.error("[AUTOLOGIN] Nastala chyba při aktualizaci hráče " + nick + " (" + uuid + ") na SQL databázi!", throwable);
+            }
+        }));
     }
 
     @Override
