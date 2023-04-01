@@ -40,6 +40,11 @@ public class HelpCommandListener {
         AtomicBoolean isAllowed = new AtomicBoolean(false); // Default blokace všeho!
         Config config = Main.getInstance().getConfig();
 
+        // Pokud command není velocity command, tak bude vzdy povolen!
+        if (!Main.getInstance().getServer().getCommandManager().getAliases().contains(label)) {
+            return true;
+        }
+
         // Pokud je na default whitelistu vzdy povoleno!
         if (config.getHelpCommands().getDefaults().contains(label)) {
             return true;
