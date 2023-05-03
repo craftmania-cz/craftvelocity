@@ -121,7 +121,7 @@ public class Config {
 
         helpCommands.load(tomlFile);
 
-        vote.voteServers = tomlFile.getList("vote.voteservers", new LinkedList<>());
+        vote.voteServers = tomlFile.getList("vote.voteServers", new LinkedList<>());
         vote.voteTokens.amount = (int)(long)tomlFile.getLong("vote.votetokens.amount");
 
         Main.getInstance().getLogger().info("Config was loaded.");
