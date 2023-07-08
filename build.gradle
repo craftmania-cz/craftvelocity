@@ -16,6 +16,10 @@ repositories {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 dependencies {
@@ -31,7 +35,7 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.30'
 
     // NuVotifier
-    compileOnly name: 'nuvotifier'
+    compileOnly 'com.github.NuVotifier.NuVotifier:nuvotifier-api:2.7.2'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'
