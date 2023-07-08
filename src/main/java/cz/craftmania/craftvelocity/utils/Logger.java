@@ -77,4 +77,12 @@ public class Logger {
     public static void connectionWhitelist(String message) {
         info("[CONNECTION-WHITELIST-UPDATER] " + message);
     }
+
+    public static void kickGuardWarning(String message) {
+        warning("[KIGK-GUARD] " + message);
+    }
+
+    public static void kickGuardError(String message) {
+        error("[KIGK-GUARD] " + message);
+    }
 }
