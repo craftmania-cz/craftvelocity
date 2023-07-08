@@ -16,6 +16,10 @@ repositories {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+
+    maven {
+        url 'https://jitpack.io'
+    }
 }
 
 dependencies {
