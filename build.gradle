@@ -35,7 +35,7 @@ dependencies {
     implementation 'mysql:mysql-connector-java:8.0.30'
 
     // NuVotifier
-    compileOnly 'com.github.NuVotifier.NuVotifier:nuvotifier-api:2.7.2'
+    compileOnly name: 'nuvotifier'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.24'

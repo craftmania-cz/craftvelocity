@@ -27,3 +27,5 @@ build
 .idea/
 .gradle/
 build/
+
+!libs/nuvotifier.jar
