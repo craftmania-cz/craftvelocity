@@ -21,3 +21,15 @@ Note: V zdrojovém kodu existuje kod pro `/autologin off`, ale je vykomentovaný
 
 ## Config
 [Defaultní config](./-/blob/main/src/main/resources/config.toml)
+
+## KickGuard
+KickGuard handluje to, na který server se hráč připojí po tom, co jde vyhozený z serveru (např. při pádu). 
+
+### Poznámka
+Seznam lobby serverů si získává z `autologin.servers.lobbies`.
+
+### Nastavení
+`kickGuard.whitelistedServers`
+  - Seznam serverů, které KickGuard bude kontrolovat, aka. pokud zde bude napsaný server "survival" a hráč bude vyhozený ze serveru "survival", KickGuard se postará o přesměrování hráče na lobby.
+  - Tato možnost je zde kvůli tomu, že nechceme řešit když se někdo vyhodí na whubu, lobby, atd.
+  - **Nikdy zde nesmí být server, na který se hráč připojuje jako první, aka. whub, lobby, atd.**

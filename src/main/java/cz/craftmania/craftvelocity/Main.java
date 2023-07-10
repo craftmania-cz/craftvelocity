@@ -21,6 +21,7 @@ import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
 import cz.craftmania.craftvelocity.managers.CraftTaskManager;
 import cz.craftmania.craftvelocity.managers.GHelpManager;
+import cz.craftmania.craftvelocity.managers.KickGuardManager;
 import cz.craftmania.craftvelocity.sql.SQLManager;
 import cz.craftmania.craftvelocity.tasks.ConnectionWhitelistUpdateTask;
 import cz.craftmania.craftvelocity.tasks.JoinRateLimitResetterTask;
@@ -58,6 +59,7 @@ public class Main {
     private @Getter AutologinManager autologinManager;
     private @Getter Pumpk1n pumpk1n;
     private @Getter GHelpManager ghelpManager;
+    private @Getter KickGuardManager kickGuardManager;
 
     // Channels
     public final static String CRAFTEVENTS_CHANNEL = "craftevents:plugin"; // Channel pro zasilani notifikaci pro zacatek eventu
@@ -122,6 +124,7 @@ public class Main {
         pumpk1n.prepareStorage();
 
         ghelpManager = new GHelpManager();
+        kickGuardManager = new KickGuardManager();
     }
 
     private void loadTasks() {

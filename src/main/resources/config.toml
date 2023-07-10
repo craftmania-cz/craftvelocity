@@ -88,6 +88,18 @@ voteServers = [
 [vote.votetokens]
 amount = 1
 
+[kickGuard]
+enabled = true
+whitelistedServers = [
+    "survival",
+    "creative"
+]
+
+[kickGuard.messages]
+kickedMessage = "§cByl jsi vyhozen ze serveru §e{server}§c! Chybová hláška: §e{kick_reason}"
+noKickReason = "§cNeznámý důvod vyhození."
+
+
 # HelpCommands
 
 # Blokace nebo povoleni zobrazování příkazů z bungee.

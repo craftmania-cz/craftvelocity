@@ -26,6 +26,7 @@ public class Config {
     private final @Getter Pumpk1n pumpk1n = new Pumpk1n();
     private final @Getter HelpCommands helpCommands = new HelpCommands();
     private final @Getter Vote vote = new Vote();
+    private final @Getter KickGuard kickGuard = new KickGuard();
 
     private Path dataDirectory = null;
     private Toml tomlFile = null;
@@ -123,6 +124,11 @@ public class Config {
 
         vote.voteServers = tomlFile.getList("vote.voteServers", new LinkedList<>());
         vote.voteTokens.amount = (int)(long)tomlFile.getLong("vote.votetokens.amount");
+
+        kickGuard.enabled = tomlFile.getBoolean("kickGuard.enabled", false);
+        kickGuard.whitelistedServers = tomlFile.getList("kickGuard.whitelistedServers", new ArrayList<>());
+        kickGuard.messages.noKickReason = tomlFile.getString("kickGuard.messages.noKickReason");
+        kickGuard.messages.kickedMessage = tomlFile.getString("kickGuard.messages.kickedMessage");
 
         Main.getInstance().getLogger().info("Config was loaded.");
     }
@@ -265,5 +271,19 @@ public class Config {
 
             private @Getter int amount;
         }
+    }
+
+    public static class KickGuard {
+
+        private @Getter Messages messages = new Messages();
+        private @Getter boolean enabled;
+        private @Getter List<String> whitelistedServers = new ArrayList<>();
+
+        public static class Messages {
+
+            private @Getter String kickedMessage;
+            private @Getter String noKickReason;
+        }
+
     }
 }
