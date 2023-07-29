@@ -2,6 +2,7 @@ package cz.craftmania.craftvelocity.commands.internal;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import cz.craftmania.craftvelocity.Main;
 import cz.craftmania.craftvelocity.commands.CraftCommand;
@@ -20,6 +21,18 @@ public class EventServerTpCommand implements CraftCommand {
 
         if ((!(source instanceof Player player))) {
             ChatInfo.error(source, "Tento příkaz je jen pro hráče!");
+            return;
+        }
+
+        ServerConnection currentServer = player.getCurrentServer().orElse(null);
+
+        if (currentServer == null) {
+            ChatInfo.warning(source, "Nebylo možné tě připojit na Event Server! (nenacházíš se na žádném serveru?)");
+            return;
+        }
+
+        if (Main.getInstance().getConfig().getAutologin().getServers().getAuth().contains(currentServer.getServerInfo().getName())) {
+            ChatInfo.error(source, "Tento příkaz nemůžeš použít na Auth Serveru!");
             return;
         }
 
