@@ -29,3 +29,4 @@ build
 build/
 
 !libs/nuvotifier.jar
+!gradle/wrapper/gradle-wrapper.jar
