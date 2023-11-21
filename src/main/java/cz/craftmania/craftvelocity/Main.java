@@ -9,6 +9,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import cz.craftmania.craftvelocity.api.proxycheck.ProxyCheckAPI;
 import cz.craftmania.craftvelocity.commands.GHelpCommand;
 import cz.craftmania.craftvelocity.commands.admin.GhelpAdminCommand;
@@ -62,10 +63,10 @@ public class Main {
     private @Getter KickGuardManager kickGuardManager;
 
     // Channels
-    public final static String CRAFTEVENTS_CHANNEL = "craftevents:plugin"; // Channel pro zasilani notifikaci pro zacatek eventu
+    public static final MinecraftChannelIdentifier CRAFTEVENTS_CHANNEL = MinecraftChannelIdentifier.from("craftevents:plugin"); // Channel pro zasilani notifikaci pro zacatek eventu
 
     @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event) throws IOException {
+    public void onProxyInitialization(ProxyInitializeEvent event) {
         long start = System.currentTimeMillis();
         instance = this;
 
@@ -141,6 +142,8 @@ public class Main {
 
         // CraftBungee rewrite
         eventManager.register(this, new EventNotifyListener());
+        this.server.getChannelRegistrar().register(CRAFTEVENTS_CHANNEL);
+
         eventManager.register(this, new HelpCommandListener());
         eventManager.register(this, new PlayerListener());
         eventManager.register(this, new VoteListener());

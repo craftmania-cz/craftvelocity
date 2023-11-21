@@ -19,10 +19,9 @@ public class EventNotifyListener {
 
     @Subscribe(order = PostOrder.FIRST)
     public void onPluginMessage(PluginMessageEvent event) {
-        if (!event.getIdentifier().getId().equals(Main.CRAFTEVENTS_CHANNEL)) {
+        if (!event.getIdentifier().equals(Main.CRAFTEVENTS_CHANNEL)) {
             return;
         }
-
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(event.getData());
             DataInputStream data = new DataInputStream(stream);
@@ -35,7 +34,6 @@ public class EventNotifyListener {
                     announceMessage(eventType, Integer.parseInt(reward), eventer);
                     break;
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
