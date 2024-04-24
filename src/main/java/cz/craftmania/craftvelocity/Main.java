@@ -129,8 +129,8 @@ public class Main {
     }
 
     private void loadTasks() {
-        craftTaskManager.register(new ConnectionWhitelistUpdateTask());
-        craftTaskManager.register(new JoinRateLimitResetterTask());
+        //craftTaskManager.register(new ConnectionWhitelistUpdateTask());
+        //craftTaskManager.register(new JoinRateLimitResetterTask());
         craftTaskManager.register(new PlayerUpdateTask());
     }
 
@@ -147,9 +147,9 @@ public class Main {
         eventManager.register(this, new HelpCommandListener());
         eventManager.register(this, new PlayerListener());
         eventManager.register(this, new VoteListener());
-        eventManager.register(this, new VPNListener());
-        eventManager.register(this, new BlacklistedNamesListener());
-        eventManager.register(this, new JoinRateLimitListener());
+        //eventManager.register(this, new VPNListener());
+        //eventManager.register(this, new BlacklistedNamesListener());
+        //eventManager.register(this, new JoinRateLimitListener());
     }
 
     private void loadCommands() {
