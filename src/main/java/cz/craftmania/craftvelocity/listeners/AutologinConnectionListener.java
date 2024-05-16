@@ -86,7 +86,7 @@ public class AutologinConnectionListener {
                 }
             }
 
-            MineToolsAPI.getInstance().getMineToolsPlayer(player.getUsername()).execute().whenCompleteAsync(((mineToolsPlayer, throwableMineTools) -> {
+            MineToolsAPI.getInstance().getMineToolsPlayer(player.getUsername()).sendAsync().whenCompleteAsync(((mineToolsPlayer, throwableMineTools) -> {
                 if (throwableMineTools != null) {
                     Logger.error("Nastala chyba při získávání dat z MineToolsAPI pro nick " + player.getUsername(), throwableMineTools);
                     return;

@@ -2,12 +2,11 @@ package cz.craftmania.craftvelocity.api.minetools;
 
 import com.google.gson.Gson;
 import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsCache;
-import dev.mayuna.simpleapi.APIResponse;
-import dev.mayuna.simpleapi.deserializers.GsonDeserializer;
+import dev.mayuna.simpleapi.GsonApiResponse;
 import lombok.Getter;
 import lombok.NonNull;
 
-public abstract class MineToolsResponse extends APIResponse<MineToolsAPI> implements GsonDeserializer {
+public abstract class MineToolsResponse extends GsonApiResponse<MineToolsAPI> {
 
     private @Getter MineToolsCache cache;
 

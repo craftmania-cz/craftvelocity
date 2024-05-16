@@ -17,6 +17,7 @@ public class Config {
     private final @Getter Plugin plugin = new Plugin();
     private final @Getter Autologin autologin = new Autologin();
     private final @Getter SQL sql = new SQL();
+    private final @Getter API api = new API();
     private final @Getter ProxyCheck proxyCheck = new ProxyCheck();
     private final @Getter ConnectionWhitelist connectionWhitelist = new ConnectionWhitelist();
     private final @Getter NickBlacklist nickBlacklist = new NickBlacklist();
@@ -97,6 +98,8 @@ public class Config {
         sql.settings.minimumConnections = tomlFile.getLong("sql.settings.minimumConnections", 2L);
         sql.settings.maximumConnections = tomlFile.getLong("sql.settings.maximumConnections", 6L);
         sql.settings.timeout = tomlFile.getLong("sql.settings.timeout", 30000L);
+
+        api.timeoutMillis = tomlFile.getLong("api.timeoutMillis", 5000L);
 
         proxyCheck.apiKey = tomlFile.getString("proxycheck.apiKey", "Proxycheck API Key");
         proxyCheck.messages.vpn = tomlFile.getString("proxycheck.messages.vpn", "IP_IS_VPN_ERROR");
@@ -182,6 +185,10 @@ public class Config {
             private @Getter long maximumConnections;
             private @Getter long timeout;
         }
+    }
+
+    public static class API {
+        private @Getter long timeoutMillis;
     }
 
     public static class ProxyCheck {

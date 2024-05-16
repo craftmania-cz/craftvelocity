@@ -58,7 +58,7 @@ public class AutologinCache {
                                                             try {
                                                                 MineToolsPlayer player = MineToolsAPI.getInstance()
                                                                                                      .getMineToolsPlayer(nick)
-                                                                                                     .execute()
+                                                                                                     .sendAsync()
                                                                                                      .join();
 
                                                                 Logger.debug("[AUTOLOGIN-CACHE] Hráč " + nick + " byl přidán do MineTools cache - je originální: " + player.isOriginalNick());

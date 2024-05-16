@@ -1,12 +1,13 @@
 package cz.craftmania.craftvelocity.api.craftmania.objects;
 
 import com.google.gson.annotations.SerializedName;
+import cz.craftmania.craftvelocity.api.craftmania.CraftManiaResponse;
 import lombok.Getter;
 
 /**
  * Holds {@link PlayerInfoData}
  */
-public class PlayerInfo {
+public class PlayerInfo extends CraftManiaResponse {
 
     private @Getter PlayerInfoData data;
 

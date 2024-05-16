@@ -40,34 +40,27 @@ public class VPNListener {
         Logger.vpn("Kontrola hráče " + username + " (" + playerAddress + ")");
 
         AtomicBoolean is403 = new AtomicBoolean(false);
-        boolean allowPlayer = false;
         boolean vpn = false;
 
-        var action = ProxyCheckAPI.getInstance().fetchProxyCheck(playerAddress);
+        var request = ProxyCheckAPI.getInstance().fetchProxyCheck("185.115.9.195");
 
-        action.onHttpError(httpError -> {
-            if (httpError.getCode() == 403) {
-                is403.set(true);
-            }
-        });
-
-        ProxyCheckResult result = null;
-        IPAddressInfo ipAddressInfo = null;
+        ProxyCheckResult result;
+        IPAddressInfo ipAddressInfo;
 
         try {
-            result = action.execute().join();
+            result = request.sendAsync().join();
         } catch (Exception exception) {
-            if (is403.get()) {
-                Logger.vpnWarning("ProxyCheck navrátil HTTP Response s kodem 403 - Hráč pustím bez kontroly.");
-            } else {
-                Logger.vpnError("Nastala chyba při kontrole IP hráče " + username + " (" + playerAddress + ")! Hráč bude propuštěn bez kontroly...", exception);
-            }
-
-            allowPlayer = true;
+            Logger.vpnError("Nastala chyba při kontrole IP hráče " + username + " (" + playerAddress + ")! Hráč bude propuštěn bez kontroly...", exception);
+            return;
         }
 
-        // Propouštíme hráče dříve kvůli chybě
-        if (allowPlayer) {
+        if (result.getHttpStatusCode() == 403) {
+            Logger.vpnWarning("ProxyCheck navrátil HTTP Response s kodem 403 - Hráč pustím bez kontroly.");
+            return;
+        }
+
+        if (!result.isOk()) {
+            Logger.vpnError("ProxyCheck navrátil neplatný výsledek - Hráč bude propuštěn bez kontroly. (" + result.getStatus() + " [" + result.getMessage() + "]");
             return;
         }
 
@@ -106,7 +99,7 @@ public class VPNListener {
         }
         if (blacklistedASN != null) {
             try {
-                PlayerInfo.PlayerInfoData data = CraftManiaAPI.getInstance().fetchPlayerInfo(username).execute().join().getData();
+                PlayerInfo.PlayerInfoData data = CraftManiaAPI.getInstance().fetchPlayerInfo(username).sendAsync().join().getData();
 
                 if (data.getPlayedTime() <= 60) {
                     Logger.vpnWarning("Hráč " + username + " (" + playerAddress + ") má zablokovaného poskytovatele a nemá nahráno více jak 1h na serveru - jeho připojení bylo zablokováno.");

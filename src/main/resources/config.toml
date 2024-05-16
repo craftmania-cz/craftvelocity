@@ -42,6 +42,9 @@ minigamesDatabase = "minigames."
 
 # Misc
 
+[api]
+timeoutMillis = 5000
+
 [proxycheck]
 apiKey = "xxxx"
 

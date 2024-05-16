@@ -1,18 +1,19 @@
 package cz.craftmania.craftvelocity.api.minetools;
 
+import cz.craftmania.craftvelocity.api.ManagedWrappedApi;
 import cz.craftmania.craftvelocity.api.minetools.objects.MineToolsPlayer;
-import dev.mayuna.simpleapi.APIRequest;
-import dev.mayuna.simpleapi.Action;
+import dev.mayuna.simpleapi.ApiRequest;
 import dev.mayuna.simpleapi.PathParameter;
-import dev.mayuna.simpleapi.SimpleAPI;
+import dev.mayuna.simpleapi.RequestMethod;
+import dev.mayuna.simpleapi.WrappedApi;
 import lombok.NonNull;
 
 import java.util.UUID;
 
 /**
- * Wraps MineTools' API into a {@link SimpleAPI}
+ * Wraps MineTools' API into a {@link ManagedWrappedApi}
  */
-public class MineToolsAPI extends SimpleAPI {
+public class MineToolsAPI extends ManagedWrappedApi {
 
     private static MineToolsAPI instance;
 
@@ -37,33 +38,33 @@ public class MineToolsAPI extends SimpleAPI {
     }
 
     @Override
-    public @NonNull String getURL() {
+    public @NonNull String getDefaultUrl() {
         return "https://api.minetools.eu";
     }
 
     /**
      * Fetches {@link MineToolsPlayer} from MineTools' API
      * @param nick Non-null player's nick
-     * @return {@link Action} with {@link MineToolsPlayer}
+     * @return {@link ApiRequest} with {@link MineToolsPlayer}
      */
-    public Action<MineToolsPlayer> getMineToolsPlayer(String nick) {
-        return new Action<>(this, MineToolsPlayer.class, new APIRequest.Builder()
-                .setEndpoint("/uuid/{nick}")
-                .setMethod("GET")
-                .addPathParameter(new PathParameter("nick", nick))
-                .build());
+    public ApiRequest<MineToolsPlayer> getMineToolsPlayer(String nick) {
+        return ApiRequest.builder(this, MineToolsPlayer.class)
+                .withEndpoint("/uuid/{nick}")
+                .withRequestMethod(RequestMethod.GET)
+                .withPathParameter(PathParameter.of("nick", nick))
+                .build();
     }
 
     /**
      * Fetches {@link MineToolsPlayer} from MineTools' API
      * @param uuid Non-null player's UUID
-     * @return {@link Action} with {@link MineToolsPlayer}
+     * @return {@link ApiRequest} with {@link MineToolsPlayer}
      */
-    public Action<MineToolsPlayer> getMineToolsPlayer(UUID uuid) {
-        return new Action<>(this, MineToolsPlayer.class, new APIRequest.Builder()
-                .setEndpoint("/uuid/{uuid}")
-                .setMethod("GET")
-                .addPathParameter(new PathParameter("uuid", uuid.toString()))
-                .build());
+    public ApiRequest<MineToolsPlayer> getMineToolsPlayer(UUID uuid) {
+        return ApiRequest.builder(this, MineToolsPlayer.class)
+                .withEndpoint("/uuid/{uuid}")
+                .withRequestMethod(RequestMethod.GET)
+                .withPathParameter(PathParameter.of("uuid", uuid.toString()))
+                .build();
     }
 }

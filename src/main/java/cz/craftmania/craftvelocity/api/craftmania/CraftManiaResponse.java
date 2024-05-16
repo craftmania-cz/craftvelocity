@@ -1,10 +1,9 @@
 package cz.craftmania.craftvelocity.api.craftmania;
 
-import dev.mayuna.simpleapi.APIResponse;
-import dev.mayuna.simpleapi.deserializers.GsonDeserializer;
+import dev.mayuna.simpleapi.GsonApiResponse;
 import lombok.Getter;
 
-public abstract class CraftManiaResponse extends APIResponse<CraftManiaAPI> implements GsonDeserializer {
+public abstract class CraftManiaResponse extends GsonApiResponse<CraftManiaAPI> {
 
     private @Getter String status;
     private @Getter boolean success;
