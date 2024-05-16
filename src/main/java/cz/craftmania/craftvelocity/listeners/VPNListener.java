@@ -42,7 +42,7 @@ public class VPNListener {
         AtomicBoolean is403 = new AtomicBoolean(false);
         boolean vpn = false;
 
-        var request = ProxyCheckAPI.getInstance().fetchProxyCheck("185.115.9.195");
+        var request = ProxyCheckAPI.getInstance().fetchProxyCheck(playerAddress);
 
         ProxyCheckResult result;
         IPAddressInfo ipAddressInfo;
