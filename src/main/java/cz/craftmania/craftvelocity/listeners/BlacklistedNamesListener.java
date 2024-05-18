@@ -23,12 +23,13 @@ public class BlacklistedNamesListener {
             return;
         }
 
-        String username = event.getUsername();
+        String username = event.getUsername().toLowerCase();
 
         Logger.nickBlacklistDebug("Kontrola hráče s nickem " + username);
 
         synchronized (blacklistedWords) {
-            String matchedWord = blacklistedWords.stream().filter(word -> username.toLowerCase().contains(word.toLowerCase())).findAny().orElse(null);
+            // note: username is already lowercase
+            String matchedWord = blacklistedWords.stream().filter(word -> username.contains(word.toLowerCase())).findAny().orElse(null);
 
             if (matchedWord == null) {
                 Logger.nickBlacklistDebug("Kontrola hráče s nickem " + username + " proběhla úspěšně");

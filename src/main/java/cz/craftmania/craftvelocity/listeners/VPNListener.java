@@ -1,5 +1,6 @@
 package cz.craftmania.craftvelocity.listeners;
 
+import com.velocitypowered.api.event.EventTask;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.PreLoginEvent;
@@ -19,7 +20,7 @@ import net.kyori.adventure.text.Component;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Optional;
 
 public class VPNListener {
 
@@ -29,9 +30,9 @@ public class VPNListener {
 
     // Chceme tuto kontrolu nechat jako poslední, jelikož dotazuje free tier proxychecku
     @Subscribe(order = PostOrder.LAST)
-    public void onPreLogin(PreLoginEvent event) {
+    public EventTask onPreLogin(PreLoginEvent event) {
         if (!event.getResult().isAllowed()) {
-            return;
+            return null;
         }
 
         String playerAddress = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
@@ -39,7 +40,40 @@ public class VPNListener {
 
         Logger.vpn("Kontrola hráče " + username + " (" + playerAddress + ")");
 
-        AtomicBoolean is403 = new AtomicBoolean(false);
+        // Check whitelisted names
+        Optional<WhitelistedName> optionalWhitelistedName = getWhitelistedName(username);
+
+        if (optionalWhitelistedName.isPresent()) {
+            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted nick (důvod: " + optionalWhitelistedName.get()
+                                                                                                                             .description() + ") - Bude propuštěn na server");
+            return null;
+        }
+
+        return EventTask.async(() -> runBlockingChecks(event));
+    }
+
+    /**
+     * Returns {@link WhitelistedName} by player's username
+     *
+     * @param username Player's username
+     *
+     * @return Optional of {@link WhitelistedName}
+     */
+    private Optional<WhitelistedName> getWhitelistedName(String username) {
+        synchronized (whitelistedNames) {
+            return whitelistedNames.stream().filter(x -> x.nick().equals(username)).findAny();
+        }
+    }
+
+    /**
+     * Runs blocking checks for player
+     *
+     * @param event {@link PreLoginEvent}
+     */
+    private void runBlockingChecks(PreLoginEvent event) {
+        String playerAddress = event.getConnection().getRemoteAddress().getAddress().getHostAddress();
+        String username = event.getUsername();
+
         boolean vpn = false;
 
         var request = ProxyCheckAPI.getInstance().fetchProxyCheck(playerAddress);
@@ -47,6 +81,7 @@ public class VPNListener {
         ProxyCheckResult result;
         IPAddressInfo ipAddressInfo;
 
+        // Fetch ProxyCheckResult
         try {
             result = request.sendAsync().join();
         } catch (Exception exception) {
@@ -71,23 +106,14 @@ public class VPNListener {
             return;
         }
 
-        // Check whitelisted names
-        WhitelistedName whitelistedName;
-        synchronized (whitelistedNames) {
-            whitelistedName = whitelistedNames.stream().filter(x -> x.nick().equals(username)).findAny().orElse(null);
-        }
-        if (whitelistedName != null) {
-            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted nick (důvod: " + whitelistedName.description() + ") - Bude propuštěn na server");
-            return;
-        }
-
         // Check whitelisted ips
         WhitelistedIP whitelistedIP;
         synchronized (whitelistedIPs) {
             whitelistedIP = whitelistedIPs.stream().filter(x -> x.address().matcher(playerAddress).matches()).findAny().orElse(null);
         }
         if (whitelistedIP != null) {
-            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted IP (whitelisted IP pattern: '" + whitelistedIP.address().toString() + "', důvod: " + whitelistedIP.description() + ") - Bude propuštěn na server");
+            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted IP (whitelisted IP pattern: '" + whitelistedIP.address()
+                                                                                                                                   .toString() + "', důvod: " + whitelistedIP.description() + ") - Bude propuštěn na server");
             return;
         }
 
@@ -103,7 +129,11 @@ public class VPNListener {
 
                 if (data.getPlayedTime() <= 60) {
                     Logger.vpnWarning("Hráč " + username + " (" + playerAddress + ") má zablokovaného poskytovatele a nemá nahráno více jak 1h na serveru - jeho připojení bylo zablokováno.");
-                    event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance().getConfig().getProxyCheck().getMessages().getBlockedASN())));
+                    event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance()
+                                                                                                    .getConfig()
+                                                                                                    .getProxyCheck()
+                                                                                                    .getMessages()
+                                                                                                    .getBlockedASN())));
                     return;
                 }
             } catch (Exception exception) {
@@ -126,14 +156,22 @@ public class VPNListener {
         if (stateIso.equalsIgnoreCase("CZ") || stateIso.equalsIgnoreCase("SK")) {
             if (vpn) {
                 Logger.vpnWarning("Hráč " + username + " (" + playerAddress + ") má CZ/SK VPN a není na address/name whitelistu - jeho připojení bylo zablokováno.");
-                event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance().getConfig().getProxyCheck().getMessages().getVpn())));
+                event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance()
+                                                                                                .getConfig()
+                                                                                                .getProxyCheck()
+                                                                                                .getMessages()
+                                                                                                .getVpn())));
                 return;
             }
 
             Logger.vpn("Hráč " + username + " (" + playerAddress + ") pochází z CZ / SK - Bude propuštěn na server");
         } else {
             Logger.vpnWarning("Hráč " + username + " (" + playerAddress + ") má IP Addressu z jiné země než CZ/SK (vpn: " + vpn + ") - jeho připojení bylo zablokováno.");
-            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance().getConfig().getProxyCheck().getMessages().getForeignIP())));
+            event.setResult(PreLoginEvent.PreLoginComponentResult.denied(Component.text(Main.getInstance()
+                                                                                            .getConfig()
+                                                                                            .getProxyCheck()
+                                                                                            .getMessages()
+                                                                                            .getForeignIP())));
             return;
         }
 
