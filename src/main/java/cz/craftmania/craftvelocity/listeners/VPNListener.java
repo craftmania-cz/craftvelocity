@@ -49,6 +49,15 @@ public class VPNListener {
             return null;
         }
 
+        // Check whitelisted ips
+        Optional<WhitelistedIP> whitelistedIP = getWhitelistedIP(playerAddress);
+
+        if (whitelistedIP.isPresent()) {
+            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted IP (whitelisted IP pattern: '" + whitelistedIP.get().address()
+                                                                                                                                   .toString() + "', důvod: " + whitelistedIP.get().description() + ") - Bude propuštěn na server");
+            return null;
+        }
+
         return EventTask.async(() -> runBlockingChecks(event));
     }
 
@@ -62,6 +71,19 @@ public class VPNListener {
     private Optional<WhitelistedName> getWhitelistedName(String username) {
         synchronized (whitelistedNames) {
             return whitelistedNames.stream().filter(x -> x.nick().equals(username)).findAny();
+        }
+    }
+
+    /**
+     * Returns {@link WhitelistedIP} by player's address
+     *
+     * @param address Player's address
+     *
+     * @return Optional of {@link WhitelistedIP}
+     */
+    private Optional<WhitelistedIP> getWhitelistedIP(String address) {
+        synchronized (whitelistedIPs) {
+            return whitelistedIPs.stream().filter(x -> x.address().matcher(address).matches()).findAny();
         }
     }
 
@@ -103,17 +125,6 @@ public class VPNListener {
 
         if (ipAddressInfo == null) {
             Logger.vpnWarning("IP Address Info při kontrole IP hráče " + username + " (" + playerAddress + ") je null - nelze zkontrolovat. Propouštím hráče bez kontroly...");
-            return;
-        }
-
-        // Check whitelisted ips
-        WhitelistedIP whitelistedIP;
-        synchronized (whitelistedIPs) {
-            whitelistedIP = whitelistedIPs.stream().filter(x -> x.address().matcher(playerAddress).matches()).findAny().orElse(null);
-        }
-        if (whitelistedIP != null) {
-            Logger.vpn("Hráč " + username + " (" + playerAddress + ") má whitelisted IP (whitelisted IP pattern: '" + whitelistedIP.address()
-                                                                                                                                   .toString() + "', důvod: " + whitelistedIP.description() + ") - Bude propuštěn na server");
             return;
         }
 
