@@ -50,7 +50,7 @@ public class ProxyCheckResultTypeAdapter implements JsonDeserializer<ProxyCheckR
 
         ProxyCheckResult proxyCheckResult = new ProxyCheckResult(ipAddressInfo, queryTime);
         proxyCheckResult.setStatus(status);
-        proxyCheckResult.setStatus(message);
+        proxyCheckResult.setMessage(message);
         return proxyCheckResult;
     }
 }
