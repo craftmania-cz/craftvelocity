@@ -9,6 +9,7 @@ import cz.craftmania.craftvelocity.utils.Logger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -89,7 +90,7 @@ public class GlobalAdminChatCommand implements CraftCommand {
         Component message = Component.text("§4§lGACHAT §a" + playerNick + "§7: ")
                 .hoverEvent(HoverEvent.showText(Component.text("§7Server: §e" + playerServer + "\n\n§7Kliknutím se připojíš")))
                 .clickEvent(ClickEvent.runCommand("/server " + playerServer))
-                .append(Component.text("§e" + String.join(" ", arguments)));
+                .append(MiniMessage.miniMessage().deserialize("<color:#ffbcd9>" + String.join(" ", arguments) + "</color>"));
 
         Logger.info("[GACHAT] " + playerNick + ": " + String.join(" ", arguments));
 
