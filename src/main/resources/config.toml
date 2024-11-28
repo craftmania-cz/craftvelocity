@@ -3,6 +3,9 @@
 # If plugin should write debug messages in console
 debug = false
 
+# If the plugins is running on final version of CraftMania proxy
+theEnd = false
+
 # SQL
 
 [sql]

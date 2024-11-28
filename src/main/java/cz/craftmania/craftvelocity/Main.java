@@ -151,6 +151,10 @@ public class Main {
         //eventManager.register(this, new VPNListener());
         //eventManager.register(this, new BlacklistedNamesListener());
         //eventManager.register(this, new JoinRateLimitListener());
+
+        if (config.getPlugin().isTheEnd()) {
+            eventManager.register(this, new TheEndListener());
+        }
     }
 
     private void loadCommands() {

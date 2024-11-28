@@ -72,6 +72,7 @@ public class Config {
      */
     public void loadConfig() {
         plugin.debug = tomlFile.getBoolean("plugin.debug", false);
+        plugin.theEnd = tomlFile.getBoolean("plugin.theEnd", false);
 
         autologin.cache.invalidateMineToolsCacheAfter = tomlFile.getLong("autologin.cache.invalidateMineToolsCacheAfter", 1800000L);
         autologin.cache.invalidateAutologinCacheAfter = tomlFile.getLong("autologin.cache.invalidateAutologinCacheAfter", 3600000L);
@@ -138,6 +139,7 @@ public class Config {
 
     public static class Plugin {
         private @Getter boolean debug = false;
+        private @Getter boolean theEnd = false;
     }
 
     public static class Autologin {
