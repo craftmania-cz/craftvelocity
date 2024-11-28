@@ -17,6 +17,7 @@ import cz.craftmania.craftvelocity.commands.admin.GlobalAdminChatCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinAdminCommand;
 import cz.craftmania.craftvelocity.commands.autologin.AutologinCommand;
 import cz.craftmania.craftvelocity.commands.internal.EventServerTpCommand;
+import cz.craftmania.craftvelocity.commands.internal.TheEndCommand;
 import cz.craftmania.craftvelocity.commands.player.LobbyCommand;
 import cz.craftmania.craftvelocity.listeners.*;
 import cz.craftmania.craftvelocity.managers.AutologinManager;
@@ -164,6 +165,7 @@ public class Main {
 
         // Internal
         new EventServerTpCommand().registerCommand(commandManager);
+        new TheEndCommand().registerCommand(commandManager);
 
         // GHelp
         new GHelpCommand().registerCommand(commandManager);
