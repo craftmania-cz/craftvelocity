@@ -17,7 +17,7 @@ jobs:
       - name: Build plugin
         run: ./gradlew shadowJar -PGPR_USER=$GPR_USER -PGPR_TOKEN=$GPR_TOKEN
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: Artifacts
           path: build/libs
